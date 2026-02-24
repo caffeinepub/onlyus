@@ -1,0 +1,246 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-add-an-app-logo-mark-a-small-intertwined-hearts-or-rose-motif-and-a-splash-loading-screen-that-displays-the-logo-centered-on-a-blush-white-fff0f5-background-with-the-app-name-onlyus-in-a-romantic-serif-font-and-a-subtle-fade-in-animation-show-the-splash-screen-on-initial-app-load-before-the-auth-state-is-resolved",
+      "featureTitle": "Add an app logo mark (a small intertwined hearts or rose motif) and a splash/loading screen that displays the logo centered on a blush-white (#FFF0F5) background with the app name 'OnlyUs' in a romantic serif font and a subtle fade-in animation. Show the splash screen on initial app load before the auth state is resolved.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/SplashScreen.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-30"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-smooth-css-based-page-transition-animations-fade-in-subtle-slide-up-for-all-route-screen-changes-in-app-tsx-including-transitions-between-landingpage-registrationpage-pairingpage-and-the-tab-navigator-as-well-as-transitions-between-call-screens-use-a-short-duration-200-300-ms-and-respect-prefers-reduced-motion",
+      "featureTitle": "Add smooth CSS-based page transition animations (fade-in + subtle slide-up) for all route/screen changes in App.tsx — including transitions between LandingPage, RegistrationPage, PairingPage, and the tab navigator, as well as transitions between call screens. Use a short duration (200–300 ms) and respect prefers-reduced-motion.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-31"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-skeleton-loading-states-and-spinners-across-all-data-fetching-screens-1-chatpage-show-skeleton-message-bubbles-while-messages-load-2-gallerypage-show-skeleton-grid-cells-while-media-loads-3-callspage-show-skeleton-call-history-cards-while-call-history-loads-4-landingpage-app-show-a-centered-spinner-while-auth-state-or-profile-is-resolving-use-the-existing-rose-blush-color-palette-for-skeleton-shimmer-colors",
+      "featureTitle": "Add skeleton loading states and spinners across all data-fetching screens: (1) ChatPage: show skeleton message bubbles while messages load; (2) GalleryPage: show skeleton grid cells while media loads; (3) CallsPage: show skeleton call history cards while call history loads; (4) LandingPage/App: show a centered spinner while auth state or profile is resolving. Use the existing rose/blush color palette for skeleton shimmer colors.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/LoadingSpinner.tsx",
+        "frontend/src/components/SkeletonCallCard.tsx",
+        "frontend/src/components/SkeletonGridCell.tsx",
+        "frontend/src/components/SkeletonMessageBubble.tsx",
+        "frontend/src/pages/CallsPage.tsx",
+        "frontend/src/pages/ChatPage.tsx",
+        "frontend/src/pages/GalleryPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-32"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-audit-and-fix-all-screen-layouts-to-be-fully-responsive-from-320px-iphone-se-up-to-430px-iphone-pro-max-large-android-use-fluid-typography-and-spacing-with-tailwind-responsive-utilities-ensure-chat-bubbles-don-t-overflow-on-narrow-screens-gallery-grid-cells-maintain-square-aspect-ratio-call-screens-center-content-correctly-bottom-tab-bar-is-always-visible-and-not-obscured-by-safe-area-insets-add-safe-area-padding-using-env-safe-area-inset-bottom-on-the-bottom-tab-bar",
+      "featureTitle": "Audit and fix all screen layouts to be fully responsive from 320px (iPhone SE) up to 430px+ (iPhone Pro Max / large Android). Use fluid typography and spacing with Tailwind responsive utilities. Ensure: chat bubbles don't overflow on narrow screens; gallery grid cells maintain square aspect ratio; call screens center content correctly; bottom tab bar is always visible and not obscured by safe area insets. Add safe area padding using env(safe-area-inset-bottom) on the bottom tab bar.",
+      "files": [
+        "frontend/src/components/BottomTabNavigator.tsx",
+        "frontend/src/pages/ActiveCallPage.tsx",
+        "frontend/src/pages/ActiveVideoCallPage.tsx",
+        "frontend/src/pages/ChatPage.tsx",
+        "frontend/src/pages/GalleryPage.tsx",
+        "frontend/src/pages/OutgoingCallPage.tsx",
+        "frontend/src/pages/VideoOutgoingCallPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-33"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-empty-state-illustrations-messages-for-three-screens-1-chatpage-when-no-messages-exist-show-a-centered-rose-toned-heart-illustration-with-the-text-say-hello-to-your-person-2-gallerypage-when-no-media-items-exist-show-a-soft-camera-flower-illustration-with-the-text-your-shared-memories-will-appear-here-3-callspage-the-existing-no-calls-yet-message-should-be-accompanied-by-a-small-phone-heart-illustration-use-inline-svg-or-a-generated-static-asset-for-illustrations-consistent-with-the-romantic-theme",
+      "featureTitle": "Add empty state illustrations/messages for three screens: (1) ChatPage: when no messages exist, show a centered rose-toned heart illustration with the text 'Say hello to your person 💕'; (2) GalleryPage: when no media items exist, show a soft camera/flower illustration with the text 'Your shared memories will appear here 🌸'; (3) CallsPage: the existing 'No calls yet 💕' message should be accompanied by a small phone/heart illustration. Use inline SVG or a generated static asset for illustrations consistent with the romantic theme.",
+      "files": [
+        "frontend/src/components/EmptyStateCalls.tsx",
+        "frontend/src/components/EmptyStateChat.tsx",
+        "frontend/src/components/EmptyStateGallery.tsx",
+        "frontend/src/pages/CallsPage.tsx",
+        "frontend/src/pages/ChatPage.tsx",
+        "frontend/src/pages/GalleryPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-34"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-lazy-loading-for-gallery-images-in-gallerypage-using-the-intersection-observer-api-or-the-native-loading-lazy-attribute-on-img-elements-images-outside-the-visible-viewport-must-not-be-fetched-until-they-scroll-into-view-add-a-low-resolution-placeholder-or-a-blurred-background-color-placeholder-while-the-image-is-loading",
+      "featureTitle": "Implement lazy loading for gallery images in GalleryPage using the Intersection Observer API (or the native loading='lazy' attribute on img elements). Images outside the visible viewport must not be fetched until they scroll into view. Add a low-resolution placeholder or a blurred background-color placeholder while the image is loading.",
+      "files": [
+        "frontend/src/pages/GalleryPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-35"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-client-side-image-compression-in-camerapage-before-uploading-to-the-motoko-backend-after-the-user-taps-save-to-our-gallery-resize-the-captured-photo-using-an-htmlcanvaselement-so-that-neither-dimension-exceeds-1280px-then-re-encode-as-jpeg-at-0-82-quality-before-converting-to-nat8-for-the-uploadmedia-call-show-the-compressed-file-size-in-the-preview-ui-alongside-the-original-size",
+      "featureTitle": "Add client-side image compression in CameraPage before uploading to the Motoko backend. After the user taps 'Save to Our Gallery', resize the captured photo using an HTMLCanvasElement so that neither dimension exceeds 1280px, then re-encode as JPEG at 0.82 quality before converting to [Nat8] for the uploadMedia call. Show the compressed file size in the preview UI alongside the original size.",
+      "files": [
+        "frontend/src/pages/CameraPage.tsx",
+        "frontend/src/utils/compressImage.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-36"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-pagination-to-the-motoko-backend-s-getmessages-function-accept-optional-offset-and-limit-parameters-default-limit-20-on-the-frontend-chatpage-load-the-most-recent-20-messages-on-mount-when-the-user-scrolls-to-the-top-of-the-chat-fetch-the-previous-page-next-20-older-messages-and-prepend-them-to-the-list-without-losing-scroll-position-show-a-load-earlier-messages-indicator-at-the-top-while-fetching",
+      "featureTitle": "Add pagination to the Motoko backend's getMessages function: accept optional offset and limit parameters (default limit 20). On the frontend ChatPage, load the most recent 20 messages on mount. When the user scrolls to the top of the chat, fetch the previous page (next 20 older messages) and prepend them to the list without losing scroll position. Show a 'Load earlier messages' indicator at the top while fetching.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/ChatPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-37"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-pagination-to-the-motoko-backend-s-getgallerymedia-function-accept-optional-offset-and-limit-parameters-default-limit-12-on-the-frontend-gallerypage-load-the-first-12-items-on-mount-show-a-load-more-button-at-the-bottom-of-the-grid-that-fetches-the-next-12-items-and-appends-them-hide-the-button-when-all-items-are-loaded",
+      "featureTitle": "Add pagination to the Motoko backend's getGalleryMedia function: accept optional offset and limit parameters (default limit 12). On the frontend GalleryPage, load the first 12 items on mount. Show a 'Load more' button at the bottom of the grid that fetches the next 12 items and appends them. Hide the button when all items are loaded.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/GalleryPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-38"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-comprehensive-error-handling-and-user-facing-error-messages-across-the-app-1-network-actor-errors-on-any-page-must-show-a-dismissible-toast-or-inline-message-in-the-rose-blush-style-e-g-connection-failed-please-try-again-2-upload-failures-in-camerapage-must-show-upload-failed-please-try-again-and-re-enable-the-save-button-3-call-creation-connection-failures-in-outgoingcallpage-and-videooutgoingcallpage-must-show-call-failed-to-connect-and-return-to-the-calls-tab-4-if-a-call-is-dropped-mid-way-rtcpeerconnection-state-becomes-failed-or-disconnected-show-a-brief-call-ended-unexpectedly-message-before-navigating-back-5-if-the-partner-is-unavailable-no-active-call-session-found-after-initiating-surface-a-clear-message-all-error-states-must-not-crash-the-app",
+      "featureTitle": "Add comprehensive error handling and user-facing error messages across the app: (1) Network/actor errors on any page must show a dismissible toast or inline message in the rose/blush style (e.g. 'Connection failed. Please try again.'); (2) Upload failures in CameraPage must show 'Upload failed — please try again' and re-enable the Save button; (3) Call creation/connection failures in OutgoingCallPage and VideoOutgoingCallPage must show 'Call failed to connect' and return to the Calls tab; (4) If a call is dropped mid-way (RTCPeerConnection state becomes 'failed' or 'disconnected'), show a brief 'Call ended unexpectedly' message before navigating back; (5) If the partner is unavailable (no active call session found after initiating), surface a clear message. All error states must not crash the app.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/ErrorToast.tsx",
+        "frontend/src/hooks/useErrorToast.ts",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/ActiveCallPage.tsx",
+        "frontend/src/pages/ActiveVideoCallPage.tsx",
+        "frontend/src/pages/CameraPage.tsx",
+        "frontend/src/pages/OutgoingCallPage.tsx",
+        "frontend/src/pages/VideoOutgoingCallPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-39"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

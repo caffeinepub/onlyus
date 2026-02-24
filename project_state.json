@@ -1,0 +1,504 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 13,
+  "summary": "Private couples web app 'OnlyUs' built with React + TypeScript frontend and Motoko backend on the Internet Computer. Features: 2-user hard limit enforced on-chain, Internet Identity authentication, 6-digit couple pairing code, real-time chat with read receipts and timestamps, romantic color palette (rose pink #E8A0BF, blush white #FFF0F5, warm accent #C0557A). Phase 2 adds Camera (browser getUserMedia, photos only) and Gallery screens with on-chain media storage, plus a bottom tab navigator (Chat, Camera, Gallery). Phase 3 adds WebRTC peer-to-peer voice calls with Motoko signaling, Outgoing/Incoming/Active Call screens, call history stored on-chain, and a 4th Calls tab. Phase 4 adds WebRTC video calls extending existing WebRTC. Phase 5 (final polish) adds: app logo + splash screen, smooth screen transitions, loading skeletons/spinners, responsive layouts (iPhone SE to iPhone Pro Max), empty state illustrations, lazy-loaded gallery images, client-side canvas image compression before on-chain upload, chat pagination (last 20 + load more), gallery pagination (12 at a time), error handling for failures and edge cases, security documentation (Motoko couple-only access enforcement), testing checklist for browser two-tab/two-browser testing, and a full README for ICP/DFX/Vite/pnpm stack.",
+  "architectural_notes": [
+    "React + TypeScript frontend with Motoko backend on Internet Computer (no Firebase/React Native)",
+    "Only 2 users can ever register — enforced on-chain in Motoko",
+    "Couple pairing via 6-digit code stored in Motoko canister",
+    "Chat messages stored on-chain with read receipts and timestamps",
+    "Internet Identity used for authentication (no email/password)",
+    "Romantic color palette: rose pink #E8A0BF, blush white #FFF0F5, warm accent #C0557A",
+    "Camera uses browser getUserMedia API (photos only); media stored as on-chain blobs in Motoko asset canister — no Firebase/external storage",
+    "Bottom tab navigator added with Chat, Camera, Gallery tabs",
+    "Voice calls use WebRTC peer-to-peer audio with Motoko canister as signaling server (offer/answer/ICE via polling) — no Agora/Firebase",
+    "Video calls use browser WebRTC (getUserMedia with audio+video) extending the existing voice call approach — no Agora SDK. CallSession/CallHistory share a callType (#voice/#video) field. Incoming video calls detected via same polling mechanism as voice calls."
+  ],
+  "known_issues": [
+    "Push notifications are not supported on this platform (Expo Notifications / FCM not available)",
+    "Browser getUserMedia camera API has limited support on iOS Safari and some mobile browsers",
+    "App crashes on load after Phase 2 deploy — likely caused by stable storage upgrade trap, type mismatch in uploadMedia/getGalleryMedia/deleteMedia, or React Query hooks crashing on mount"
+  ],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Minimal romantic app logo mark featuring two intertwined hearts or a small rose blossom in rose pink (#E8A0BF) and warm accent (#C0557A) on a transparent background (onlyus-logo.dim_256x256.png)\n- Soft illustrated empty state for chat: a single delicate pink heart with small floating sparkles on a transparent background (empty-chat.dim_400x300.png)\n- Soft illustrated empty state for gallery: a small vintage camera with a pink rose bloom beside it on a transparent background (empty-gallery.dim_400x300.png)\n- Soft illustrated empty state for call history: a small phone handset with a pink heart above it on a transparent background (empty-calls.dim_400x300.png)",
+  "existing_features": [
+    {
+      "id": "feature-build-a-react-frontend-with-internet-identity-authentication-show-a-landing-login-screen-if-the-user-is-not-authenticated-after-authentication-check-if-the-user-is-registered-if-not-show-a-registration-form-username-only-after-registration-check-pairing-status-and-route-accordingly",
+      "title": "Build a React frontend with Internet Identity authentication. Show a landing/login screen if the user is not authenticated. After authentication, check if the user is registered; if not, show a registration form (username only). After registration, check pairing status and route accordingly.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-pairing-screen-if-the-current-user-is-user-1-generated-a-code-display-their-6-digit-couple-code-prominently-with-a-copy-button-if-the-current-user-is-user-2-show-an-input-field-to-enter-the-partner-s-code-and-a-pair-up-button-on-successful-pairing-redirect-to-the-chat-screen",
+      "title": "Build a Pairing screen. If the current user is User 1 (generated a code), display their 6-digit couple code prominently with a copy button. If the current user is User 2, show an input field to enter the partner's code and a 'Pair Up' button. On successful pairing, redirect to the Chat screen.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-chat-screen-that-displays-the-conversation-between-the-two-paired-users-show-both-users-names-avatars-at-the-top-render-messages-with-sender-name-message-text-and-formatted-timestamp-show-a-read-receipt-indicator-seen-unseen-on-messages-sent-by-the-current-user-include-a-text-input-bar-and-send-button-at-the-bottom-poll-for-new-messages-every-3-seconds-using-react-query",
+      "title": "Build a Chat screen that displays the conversation between the two paired users. Show both users' names/avatars at the top. Render messages with sender name, message text, and formatted timestamp. Show a read receipt indicator (Seen/Unseen) on messages sent by the current user. Include a text input bar and Send button at the bottom. Poll for new messages every 3 seconds using React Query.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-soft-romantic-visual-theme-consistently-across-all-screens-use-rose-pink-e8a0bf-as-the-primary-accent-blush-white-fff0f5-as-the-background-and-warm-accent-c0557a-for-interactive-elements-and-highlights-use-a-clean-minimal-layout-with-rounded-cards-gentle-shadows-and-an-elegant-serif-or-rounded-sans-serif-heading-font-style-message-bubbles-with-distinct-colors-for-each-user",
+      "title": "Apply a soft romantic visual theme consistently across all screens. Use rose pink (#E8A0BF) as the primary accent, blush white (#FFF0F5) as the background, and warm accent (#C0557A) for interactive elements and highlights. Use a clean, minimal layout with rounded cards, gentle shadows, and an elegant serif or rounded sans-serif heading font. Style message bubbles with distinct colors for each user.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-a-decorative-hero-background-image-for-the-landing-screen-featuring-a-soft-romantic-aesthetic-with-rose-and-blush-tones-subtle-floral-or-heart-motifs-suitable-as-a-full-screen-background",
+      "title": "Generate a decorative hero/background image for the landing screen featuring a soft romantic aesthetic with rose and blush tones, subtle floral or heart motifs, suitable as a full-screen background.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-camera-screen-that-uses-the-browser-getusermedia-api-to-capture-photos-no-video-the-screen-must-request-camera-permission-and-display-a-live-viewfinder-support-toggling-between-front-and-back-camera-support-toggling-flash-torch-on-supported-devices-show-a-capture-button-that-takes-a-still-photo-after-capture-display-a-preview-with-two-options-save-to-our-gallery-uploads-the-blob-to-the-motoko-backend-via-uploadmedia-and-retake-returns-to-live-viewfinder-show-a-loading-uploading-indicator-while-the-upload-is-in-progress-match-the-romantic-rose-blush-design-theme",
+      "title": "Add a Camera screen that uses the browser getUserMedia API to capture photos (no video). The screen must: request camera permission and display a live viewfinder; support toggling between front and back camera; support toggling flash (torch) on supported devices; show a capture button that takes a still photo; after capture, display a preview with two options — 'Save to Our Gallery' (uploads the blob to the Motoko backend via uploadMedia) and 'Retake' (returns to live viewfinder); show a loading/uploading indicator while the upload is in progress; match the romantic rose/blush design theme.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-gallery-screen-that-fetches-all-photos-for-the-paired-couple-from-the-motoko-backend-via-getgallerymedia-display-photos-in-a-3-column-grid-with-smooth-fade-in-animations-when-items-load-tapping-a-photo-opens-it-full-screen-with-pinch-to-zoom-support-long-pressing-a-photo-shows-a-delete-confirmation-on-confirm-call-deletemedia-to-remove-it-from-the-backend-and-update-the-grid-each-grid-item-shows-a-small-label-with-the-uploader-s-name-and-a-formatted-timestamp-show-a-loading-spinner-while-media-is-loading-or-an-upload-is-in-progress-match-the-romantic-rose-blush-design-theme-poll-or-refetch-gallery-data-after-a-successful-upload-from-the-camera-screen",
+      "title": "Add a Gallery screen that fetches all photos for the paired couple from the Motoko backend via getGalleryMedia. Display photos in a 3-column grid with smooth fade-in animations when items load. Tapping a photo opens it full-screen with pinch-to-zoom support. Long-pressing a photo shows a delete confirmation; on confirm, call deleteMedia to remove it from the backend and update the grid. Each grid item shows a small label with the uploader's name and a formatted timestamp. Show a loading spinner while media is loading or an upload is in progress. Match the romantic rose/blush design theme. Poll or refetch gallery data after a successful upload from the Camera screen.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-existing-screen-based-routing-in-app-tsx-with-a-bottom-tab-navigator-that-is-shown-after-authentication-and-pairing-the-navigator-must-include-three-tabs-chat-camera-and-gallery-tab-icons-and-labels-must-use-the-romantic-rose-blush-design-active-tab-highlighted-in-warm-accent-c0557a-inactive-in-muted-rose-the-landingpage-registrationpage-and-pairingpage-continue-to-render-outside-the-tab-navigator-as-before-add-react-query-hooks-in-usequeries-ts-for-uploadmedia-getgallerymedia-and-deletemedia",
+      "title": "Replace the existing screen-based routing in App.tsx with a bottom tab navigator that is shown after authentication and pairing. The navigator must include three tabs: Chat, Camera, and Gallery. Tab icons and labels must use the romantic rose/blush design (active tab highlighted in warm accent #C0557A, inactive in muted rose). The LandingPage, RegistrationPage, and PairingPage continue to render outside the tab navigator as before. Add React Query hooks in useQueries.ts for uploadMedia, getGalleryMedia, and deleteMedia.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-harden-all-react-query-hooks-in-usequeries-ts-that-call-uploadmedia-getgallerymedia-and-deletemedia-so-that-any-backend-error-or-rejected-promise-is-caught-gracefully-and-does-not-cause-an-unhandled-exception-that-crashes-the-entire-react-app-wrap-all-actor-calls-in-try-catch-blocks-return-error-states-instead-of-throwing-and-ensure-the-hooks-return-safe-loading-error-states-when-the-actor-is-not-yet-available-or-when-calls-fail-ensure-no-hook-throws-synchronously-during-component-mount",
+      "title": "Harden all React Query hooks in useQueries.ts that call uploadMedia, getGalleryMedia, and deleteMedia so that any backend error or rejected promise is caught gracefully and does not cause an unhandled exception that crashes the entire React app. Wrap all actor calls in try/catch blocks, return error states instead of throwing, and ensure the hooks return safe loading/error states when the actor is not yet available or when calls fail. Ensure no hook throws synchronously during component mount.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-react-query-hooks-in-usequeries-ts-for-all-voice-call-backend-interactions-usecreatecallsession-mutation-useupdatecallstatus-mutation-usesetoffer-mutation-usesetanswer-mutation-useaddicecandidate-mutation-usegetactivecallsession-polling-query-2-second-interval-usegetcallsession-query-by-id-and-usegetcallhistory-query-all-hooks-must-wrap-actor-calls-in-try-catch-return-safe-loading-error-states-when-the-actor-is-unavailable-and-never-throw-synchronously",
+      "title": "Add React Query hooks in useQueries.ts for all voice call backend interactions: useCreateCallSession (mutation), useUpdateCallStatus (mutation), useSetOffer (mutation), useSetAnswer (mutation), useAddICECandidate (mutation), useGetActiveCallSession (polling query, 2-second interval), useGetCallSession (query by id), and useGetCallHistory (query). All hooks must wrap actor calls in try/catch, return safe loading/error states when the actor is unavailable, and never throw synchronously.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-an-outgoing-call-screen-outgoingcallpage-tsx-when-the-current-user-initiates-a-call-call-createcallsession-then-begin-webrtc-offer-creation-getusermedia-audio-only-store-the-offer-sdp-via-setoffer-and-poll-getactivecallsession-every-2-seconds-display-the-partner-s-name-and-a-pulsing-avatar-show-a-calling-status-label-and-a-red-end-cancel-button-if-the-session-status-becomes-active-partner-accepted-and-answer-sdp-is-available-set-the-remote-description-and-proceed-to-the-active-call-screen-if-the-session-becomes-declined-or-the-user-cancels-update-status-to-ended-and-return-to-the-calls-tab-use-the-romantic-rose-blush-design-theme-with-smooth-fade-in-transition",
+      "title": "Build an Outgoing Call screen (OutgoingCallPage.tsx). When the current user initiates a call: call createCallSession, then begin WebRTC offer creation (getUserMedia audio only), store the offer SDP via setOffer, and poll getActiveCallSession every 2 seconds. Display the partner's name and a pulsing avatar. Show a 'Calling…' status label and a red End/Cancel button. If the session status becomes #active (partner accepted and answer SDP is available), set the remote description and proceed to the Active Call screen. If the session becomes #declined or the user cancels, update status to #ended and return to the Calls tab. Use the romantic rose/blush design theme with smooth fade-in transition.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-an-incoming-call-screen-incomingcallpage-tsx-poll-getactivecallsession-every-2-seconds-when-a-session-with-status-calling-is-detected-and-the-current-user-is-the-receiver-display-the-caller-s-name-and-avatar-a-green-accept-button-and-a-red-decline-button-on-accept-call-getusermedia-audio-only-create-a-webrtc-answer-from-the-stored-offer-sdp-store-it-via-setanswer-call-updatecallstatus-to-active-then-transition-to-the-active-call-screen-on-decline-call-updatecallstatus-to-declined-and-dismiss-the-screen-must-be-shown-as-an-overlay-modal-on-top-of-any-current-tab-when-an-incoming-session-is-detected-use-the-romantic-rose-blush-design-theme",
+      "title": "Build an Incoming Call screen (IncomingCallPage.tsx). Poll getActiveCallSession every 2 seconds. When a session with status #calling is detected and the current user is the receiver, display the caller's name and avatar, a green Accept button, and a red Decline button. On Accept: call getUserMedia (audio only), create a WebRTC answer from the stored offer SDP, store it via setAnswer, call updateCallStatus to #active, then transition to the Active Call screen. On Decline: call updateCallStatus to #declined and dismiss. The screen must be shown as an overlay/modal on top of any current tab when an incoming session is detected. Use the romantic rose/blush design theme.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-an-active-call-screen-activecallpage-tsx-display-the-partner-s-name-and-avatar-show-a-live-call-duration-timer-counting-up-from-00-00-provide-a-mute-unmute-toggle-button-a-speaker-on-off-toggle-button-using-audiocontext-or-setsinkid-where-available-and-a-red-end-call-button-ice-candidates-must-be-exchanged-by-polling-getcallsession-and-adding-remote-ice-candidates-to-the-rtcpeerconnection-via-addicecandidate-as-they-appear-when-end-call-is-pressed-call-updatecallstatus-ended-stop-all-media-tracks-close-the-rtcpeerconnection-and-navigate-back-to-the-calls-tab-if-the-polled-session-status-becomes-ended-partner-hung-up-also-clean-up-and-navigate-back-use-the-romantic-rose-blush-design-theme",
+      "title": "Build an Active Call screen (ActiveCallPage.tsx). Display the partner's name and avatar. Show a live call duration timer counting up from 00:00. Provide a Mute/Unmute toggle button, a Speaker On/Off toggle button (using AudioContext or setSinkId where available), and a red End Call button. ICE candidates must be exchanged by polling getCallSession and adding remote ICE candidates to the RTCPeerConnection via addICECandidate as they appear. When End Call is pressed, call updateCallStatus(#ended), stop all media tracks, close the RTCPeerConnection, and navigate back to the Calls tab. If the polled session status becomes #ended (partner hung up), also clean up and navigate back. Use the romantic rose/blush design theme.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-calls-tab-page-callspage-tsx-that-displays-the-call-history-for-the-paired-couple-fetched-via-usegetcallhistory-each-entry-must-show-the-other-user-s-name-call-direction-outgoing-incoming-indicated-by-icon-call-status-ended-completed-declined-declined-missed-missed-formatted-duration-mm-ss-and-formatted-timestamp-show-an-empty-state-message-no-calls-yet-when-there-is-no-history-include-a-prominent-call-partner-name-button-at-the-top-that-navigates-to-the-outgoing-call-screen-use-the-romantic-rose-blush-design-theme-with-gentle-card-styling-consistent-with-the-chat-and-gallery-pages",
+      "title": "Build a Calls tab page (CallsPage.tsx) that displays the call history for the paired couple fetched via useGetCallHistory. Each entry must show: the other user's name, call direction (outgoing/incoming indicated by icon), call status (#ended = completed, #declined = declined, #missed = missed), formatted duration (MM:SS), and formatted timestamp. Show an empty state message ('No calls yet 💕') when there is no history. Include a prominent 'Call [Partner Name]' button at the top that navigates to the Outgoing Call screen. Use the romantic rose/blush design theme with gentle card styling consistent with the Chat and Gallery pages.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-app-tsx-and-bottomtabnavigator-tsx-to-add-a-4th-calls-tab-to-the-bottom-navigator-the-tab-must-appear-between-gallery-and-any-future-tabs-use-a-phone-call-icon-and-apply-the-same-active-warm-accent-c0557a-inactive-muted-rose-styling-as-existing-tabs-wire-the-calls-tab-to-render-callspage-mount-the-incomingcallpage-polling-logic-at-the-tab-navigator-level-so-incoming-call-detection-is-active-regardless-of-which-tab-is-currently-shown",
+      "title": "Update App.tsx and BottomTabNavigator.tsx to add a 4th 'Calls' tab to the bottom navigator. The tab must appear between Gallery and any future tabs, use a phone/call icon, and apply the same active (warm accent #C0557A) / inactive (muted rose) styling as existing tabs. Wire the Calls tab to render CallsPage. Mount the IncomingCallPage polling logic at the tab navigator level so incoming call detection is active regardless of which tab is currently shown.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-react-query-hooks-in-usequeries-ts-for-video-call-interactions-reusing-the-existing-voice-call-hook-patterns-but-passing-calltype-video-where-applicable-specifically-ensure-usecreatecallsession-mutation-accepts-a-calltype-argument-so-callers-can-pass-voice-or-video-and-that-usegetactivecallsession-and-usegetcallhistory-return-the-calltype-field-from-the-backend-all-hooks-must-wrap-actor-calls-in-try-catch-and-never-throw-synchronously",
+      "title": "Add React Query hooks in useQueries.ts for video call interactions, reusing the existing voice call hook patterns but passing callType: #video where applicable. Specifically, ensure useCreateCallSession mutation accepts a callType argument (so callers can pass #voice or #video), and that useGetActiveCallSession and useGetCallHistory return the callType field from the backend. All hooks must wrap actor calls in try/catch and never throw synchronously.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-videooutgoingcallpage-tsx-before-starting-request-camera-and-microphone-permissions-via-getusermedia-audio-video-if-denied-show-a-friendly-explanation-message-and-a-back-button-instead-of-proceeding-on-permission-grant-call-createcallsession-with-calltype-video-get-a-local-media-stream-with-both-audio-and-video-tracks-display-the-local-camera-feed-in-a-preview-element-while-waiting-create-a-webrtc-offer-with-the-video-track-included-store-the-offer-sdp-via-setoffer-and-poll-getactivecallsession-every-2-seconds-display-the-partner-s-name-a-pulsing-avatar-a-calling-status-label-and-a-red-end-cancel-button-if-the-polled-session-status-becomes-active-and-answer-sdp-is-available-set-the-remote-description-on-the-rtcpeerconnection-and-navigate-to-activevideocallpage-passing-the-peer-connection-and-local-stream-if-the-session-becomes-declined-or-the-user-cancels-call-updatecallstatus-ended-stop-all-media-tracks-and-return-to-the-calls-tab-use-a-dark-background-with-romantic-rose-blush-accents-and-a-smooth-fade-in-transition",
+      "title": "Build VideoOutgoingCallPage.tsx. Before starting, request camera and microphone permissions via getUserMedia(audio+video); if denied, show a friendly explanation message and a back button instead of proceeding. On permission grant: call createCallSession with callType #video, get a local media stream with both audio and video tracks, display the local camera feed in a preview element while waiting, create a WebRTC offer with the video track included, store the offer SDP via setOffer, and poll getActiveCallSession every 2 seconds. Display the partner's name, a pulsing avatar, a 'Calling…' status label, and a red End/Cancel button. If the polled session status becomes #active and answer SDP is available, set the remote description on the RTCPeerConnection and navigate to ActiveVideoCallPage passing the peer connection and local stream. If the session becomes #declined or the user cancels, call updateCallStatus(#ended), stop all media tracks, and return to the Calls tab. Use a dark background with romantic rose/blush accents and a smooth fade-in transition.",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-videoincomingcallpage-tsx-as-an-overlay-modal-component-it-must-detect-an-incoming-video-call-session-calltype-video-status-calling-current-user-is-receiver-via-the-same-polling-mechanism-used-for-voice-calls-poll-getactivecallsession-every-2-seconds-at-the-tab-navigator-level-when-detected-render-a-full-screen-overlay-showing-the-caller-s-name-and-avatar-a-green-accept-button-with-a-camera-icon-and-a-red-decline-button-on-accept-request-getusermedia-audio-video-create-a-webrtc-answer-from-the-stored-offer-sdp-including-video-tracks-store-via-setanswer-call-updatecallstatus-active-then-navigate-to-activevideocallpage-on-decline-call-updatecallstatus-declined-and-dismiss-the-overlay-show-a-friendly-permission-denial-message-if-camera-mic-permissions-are-denied-on-accept-use-the-romantic-rose-blush-design-with-dark-call-ui-accents",
+      "title": "Build VideoIncomingCallPage.tsx as an overlay/modal component. It must detect an incoming video call session (callType #video, status #calling, current user is receiver) via the same polling mechanism used for voice calls (poll getActiveCallSession every 2 seconds at the tab navigator level). When detected, render a full-screen overlay showing the caller's name and avatar, a green Accept button with a camera icon, and a red Decline button. On Accept: request getUserMedia(audio+video), create a WebRTC answer from the stored offer SDP including video tracks, store via setAnswer, call updateCallStatus(#active), then navigate to ActiveVideoCallPage. On Decline: call updateCallStatus(#declined) and dismiss the overlay. Show a friendly permission denial message if camera/mic permissions are denied on Accept. Use the romantic rose/blush design with dark call UI accents.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-activevideocallpage-tsx-display-the-partner-s-name-at-the-top-and-a-live-call-duration-timer-counting-up-from-00-00-show-the-remote-video-feed-full-screen-show-the-local-camera-feed-as-a-small-draggable-pip-picture-in-picture-window-overlaid-on-the-remote-feed-the-pip-must-be-draggable-via-touch-and-mouse-provide-a-control-bar-at-the-bottom-with-mute-unmute-audio-toggle-camera-on-off-toggle-switch-front-back-camera-button-re-acquires-local-stream-with-facingmode-constraint-and-a-red-end-call-button-exchange-ice-candidates-by-polling-getcallsession-and-adding-newly-seen-remote-ice-candidates-to-the-rtcpeerconnection-via-addicecandidate-on-end-call-call-updatecallstatus-ended-stop-all-media-tracks-close-the-rtcpeerconnection-and-navigate-back-to-the-calls-tab-if-the-polled-session-status-becomes-ended-partner-hung-up-also-clean-up-and-navigate-back-use-a-dark-background-a-subtle-animation-when-the-call-connects-and-romantic-rose-blush-accents-on-controls",
+      "title": "Build ActiveVideoCallPage.tsx. Display the partner's name at the top and a live call duration timer counting up from 00:00. Show the remote video feed full-screen. Show the local camera feed as a small draggable PiP (picture-in-picture) window overlaid on the remote feed; the PiP must be draggable via touch and mouse. Provide a control bar at the bottom with: Mute/Unmute audio toggle, Camera On/Off toggle, Switch front/back camera button (re-acquires local stream with facingMode constraint), and a red End Call button. Exchange ICE candidates by polling getCallSession and adding newly seen remote ICE candidates to the RTCPeerConnection via addICECandidate. On End Call: call updateCallStatus(#ended), stop all media tracks, close the RTCPeerConnection, and navigate back to the Calls tab. If the polled session status becomes #ended (partner hung up), also clean up and navigate back. Use a dark background, a subtle animation when the call connects, and romantic rose/blush accents on controls.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-callspage-tsx-to-add-two-initiate-call-buttons-at-the-top-voice-call-navigates-to-outgoingcallpage-and-video-call-navigates-to-videooutgoingcallpage-update-each-call-history-entry-to-display-a-voice-or-video-type-icon-alongside-the-existing-other-user-s-name-direction-indicator-status-formatted-duration-and-timestamp-apply-the-existing-romantic-rose-blush-card-styling-consistently",
+      "title": "Update CallsPage.tsx to add two initiate-call buttons at the top: 'Voice Call' (navigates to OutgoingCallPage) and 'Video Call' (navigates to VideoOutgoingCallPage). Update each call history entry to display a voice or video type icon alongside the existing other user's name, direction indicator, status, formatted duration, and timestamp. Apply the existing romantic rose/blush card styling consistently.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-app-tsx-and-the-tab-level-incoming-call-overlay-logic-to-detect-both-incoming-voice-calltype-voice-and-incoming-video-calltype-video-sessions-from-the-polled-getactivecallsession-result-and-render-the-correct-overlay-incomingcalloverlay-for-voice-calls-and-videoincomingcallpage-for-video-calls-ensure-videooutgoingcallpage-and-activevideocallpage-are-integrated-into-the-top-level-call-state-machine-in-app-tsx-so-they-can-be-navigated-to-from-within-the-tab-navigator-flow-consistent-with-how-outgoingcallpage-and-activecallpage-are-wired",
+      "title": "Update App.tsx and the tab-level incoming call overlay logic to detect both incoming voice (callType #voice) and incoming video (callType #video) sessions from the polled getActiveCallSession result, and render the correct overlay — IncomingCallOverlay for voice calls and VideoIncomingCallPage for video calls. Ensure VideoOutgoingCallPage and ActiveVideoCallPage are integrated into the top-level call state machine in App.tsx so they can be navigated to from within the tab navigator flow, consistent with how OutgoingCallPage and ActiveCallPage are wired.",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-app-logo-mark-a-small-intertwined-hearts-or-rose-motif-and-a-splash-loading-screen-that-displays-the-logo-centered-on-a-blush-white-fff0f5-background-with-the-app-name-onlyus-in-a-romantic-serif-font-and-a-subtle-fade-in-animation-show-the-splash-screen-on-initial-app-load-before-the-auth-state-is-resolved",
+      "title": "Add an app logo mark (a small intertwined hearts or rose motif) and a splash/loading screen that displays the logo centered on a blush-white (#FFF0F5) background with the app name 'OnlyUs' in a romantic serif font and a subtle fade-in animation. Show the splash screen on initial app load before the auth state is resolved.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-smooth-css-based-page-transition-animations-fade-in-subtle-slide-up-for-all-route-screen-changes-in-app-tsx-including-transitions-between-landingpage-registrationpage-pairingpage-and-the-tab-navigator-as-well-as-transitions-between-call-screens-use-a-short-duration-200-300-ms-and-respect-prefers-reduced-motion",
+      "title": "Add smooth CSS-based page transition animations (fade-in + subtle slide-up) for all route/screen changes in App.tsx — including transitions between LandingPage, RegistrationPage, PairingPage, and the tab navigator, as well as transitions between call screens. Use a short duration (200–300 ms) and respect prefers-reduced-motion.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-skeleton-loading-states-and-spinners-across-all-data-fetching-screens-1-chatpage-show-skeleton-message-bubbles-while-messages-load-2-gallerypage-show-skeleton-grid-cells-while-media-loads-3-callspage-show-skeleton-call-history-cards-while-call-history-loads-4-landingpage-app-show-a-centered-spinner-while-auth-state-or-profile-is-resolving-use-the-existing-rose-blush-color-palette-for-skeleton-shimmer-colors",
+      "title": "Add skeleton loading states and spinners across all data-fetching screens: (1) ChatPage: show skeleton message bubbles while messages load; (2) GalleryPage: show skeleton grid cells while media loads; (3) CallsPage: show skeleton call history cards while call history loads; (4) LandingPage/App: show a centered spinner while auth state or profile is resolving. Use the existing rose/blush color palette for skeleton shimmer colors.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-audit-and-fix-all-screen-layouts-to-be-fully-responsive-from-320px-iphone-se-up-to-430px-iphone-pro-max-large-android-use-fluid-typography-and-spacing-with-tailwind-responsive-utilities-ensure-chat-bubbles-don-t-overflow-on-narrow-screens-gallery-grid-cells-maintain-square-aspect-ratio-call-screens-center-content-correctly-bottom-tab-bar-is-always-visible-and-not-obscured-by-safe-area-insets-add-safe-area-padding-using-env-safe-area-inset-bottom-on-the-bottom-tab-bar",
+      "title": "Audit and fix all screen layouts to be fully responsive from 320px (iPhone SE) up to 430px+ (iPhone Pro Max / large Android). Use fluid typography and spacing with Tailwind responsive utilities. Ensure: chat bubbles don't overflow on narrow screens; gallery grid cells maintain square aspect ratio; call screens center content correctly; bottom tab bar is always visible and not obscured by safe area insets. Add safe area padding using env(safe-area-inset-bottom) on the bottom tab bar.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-empty-state-illustrations-messages-for-three-screens-1-chatpage-when-no-messages-exist-show-a-centered-rose-toned-heart-illustration-with-the-text-say-hello-to-your-person-2-gallerypage-when-no-media-items-exist-show-a-soft-camera-flower-illustration-with-the-text-your-shared-memories-will-appear-here-3-callspage-the-existing-no-calls-yet-message-should-be-accompanied-by-a-small-phone-heart-illustration-use-inline-svg-or-a-generated-static-asset-for-illustrations-consistent-with-the-romantic-theme",
+      "title": "Add empty state illustrations/messages for three screens: (1) ChatPage: when no messages exist, show a centered rose-toned heart illustration with the text 'Say hello to your person 💕'; (2) GalleryPage: when no media items exist, show a soft camera/flower illustration with the text 'Your shared memories will appear here 🌸'; (3) CallsPage: the existing 'No calls yet 💕' message should be accompanied by a small phone/heart illustration. Use inline SVG or a generated static asset for illustrations consistent with the romantic theme.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-lazy-loading-for-gallery-images-in-gallerypage-using-the-intersection-observer-api-or-the-native-loading-lazy-attribute-on-img-elements-images-outside-the-visible-viewport-must-not-be-fetched-until-they-scroll-into-view-add-a-low-resolution-placeholder-or-a-blurred-background-color-placeholder-while-the-image-is-loading",
+      "title": "Implement lazy loading for gallery images in GalleryPage using the Intersection Observer API (or the native loading='lazy' attribute on img elements). Images outside the visible viewport must not be fetched until they scroll into view. Add a low-resolution placeholder or a blurred background-color placeholder while the image is loading.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-client-side-image-compression-in-camerapage-before-uploading-to-the-motoko-backend-after-the-user-taps-save-to-our-gallery-resize-the-captured-photo-using-an-htmlcanvaselement-so-that-neither-dimension-exceeds-1280px-then-re-encode-as-jpeg-at-0-82-quality-before-converting-to-nat8-for-the-uploadmedia-call-show-the-compressed-file-size-in-the-preview-ui-alongside-the-original-size",
+      "title": "Add client-side image compression in CameraPage before uploading to the Motoko backend. After the user taps 'Save to Our Gallery', resize the captured photo using an HTMLCanvasElement so that neither dimension exceeds 1280px, then re-encode as JPEG at 0.82 quality before converting to [Nat8] for the uploadMedia call. Show the compressed file size in the preview UI alongside the original size.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-pagination-to-the-motoko-backend-s-getmessages-function-accept-optional-offset-and-limit-parameters-default-limit-20-on-the-frontend-chatpage-load-the-most-recent-20-messages-on-mount-when-the-user-scrolls-to-the-top-of-the-chat-fetch-the-previous-page-next-20-older-messages-and-prepend-them-to-the-list-without-losing-scroll-position-show-a-load-earlier-messages-indicator-at-the-top-while-fetching",
+      "title": "Add pagination to the Motoko backend's getMessages function: accept optional offset and limit parameters (default limit 20). On the frontend ChatPage, load the most recent 20 messages on mount. When the user scrolls to the top of the chat, fetch the previous page (next 20 older messages) and prepend them to the list without losing scroll position. Show a 'Load earlier messages' indicator at the top while fetching.",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-pagination-to-the-motoko-backend-s-getgallerymedia-function-accept-optional-offset-and-limit-parameters-default-limit-12-on-the-frontend-gallerypage-load-the-first-12-items-on-mount-show-a-load-more-button-at-the-bottom-of-the-grid-that-fetches-the-next-12-items-and-appends-them-hide-the-button-when-all-items-are-loaded",
+      "title": "Add pagination to the Motoko backend's getGalleryMedia function: accept optional offset and limit parameters (default limit 12). On the frontend GalleryPage, load the first 12 items on mount. Show a 'Load more' button at the bottom of the grid that fetches the next 12 items and appends them. Hide the button when all items are loaded.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-error-handling-and-user-facing-error-messages-across-the-app-1-network-actor-errors-on-any-page-must-show-a-dismissible-toast-or-inline-message-in-the-rose-blush-style-e-g-connection-failed-please-try-again-2-upload-failures-in-camerapage-must-show-upload-failed-please-try-again-and-re-enable-the-save-button-3-call-creation-connection-failures-in-outgoingcallpage-and-videooutgoingcallpage-must-show-call-failed-to-connect-and-return-to-the-calls-tab-4-if-a-call-is-dropped-mid-way-rtcpeerconnection-state-becomes-failed-or-disconnected-show-a-brief-call-ended-unexpectedly-message-before-navigating-back-5-if-the-partner-is-unavailable-no-active-call-session-found-after-initiating-surface-a-clear-message-all-error-states-must-not-crash-the-app",
+      "title": "Add comprehensive error handling and user-facing error messages across the app: (1) Network/actor errors on any page must show a dismissible toast or inline message in the rose/blush style (e.g. 'Connection failed. Please try again.'); (2) Upload failures in CameraPage must show 'Upload failed — please try again' and re-enable the Save button; (3) Call creation/connection failures in OutgoingCallPage and VideoOutgoingCallPage must show 'Call failed to connect' and return to the Calls tab; (4) If a call is dropped mid-way (RTCPeerConnection state becomes 'failed' or 'disconnected'), show a brief 'Call ended unexpectedly' message before navigating back; (5) If the partner is unavailable (no active call session found after initiating), surface a clear message. All error states must not crash the app.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Create a Motoko backend actor that enforces a hard limit of exactly 2 registered users. Store each user's principal, username, and a generated 6-digit couple pairing code. Expose functions: registerUser(username), getMyProfile(), getUserCount(), generateCoupleCode(), pairWithCode(code), isPaired(), and getPartnerProfile().",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Implement a chat message store in the Motoko backend. Expose functions: sendMessage(text), getMessages(), and markMessagesRead(). Each message must record: sender principal, sender username, message text, ISO timestamp, and a read boolean.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Add a Camera screen using browser getUserMedia API (photos only, no video). After capture show a preview with 'Save to Our Gallery' or 'Retake' options. Support front/back camera toggle and flash toggle. Upload photo blobs to Motoko canister storage under the couple's private folder. Match romantic rose/blush design.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Add a Gallery screen that fetches all photos stored on-chain for the paired couple. Display in a 3-column grid with smooth load animations. Tap to view full-screen with pinch-to-zoom. Long press to delete (removes from Motoko storage + metadata). Show uploader name and timestamp. Match romantic rose/blush design.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Extend Motoko backend to store photo blobs and metadata (url/blob, type, uploadedBy principal, timestamp) for a couple's gallery. Expose functions: uploadMedia(blob, type), getGalleryMedia(), deleteMedia(id). Enforce couple-only access.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Replace existing screen-based navigation with a bottom tab navigator featuring Chat, Camera, and Gallery tabs. Match romantic design theme.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Extend the Motoko backend actor to store photo blobs and metadata for a couple's private gallery. Add stable storage for media items, each containing: a unique ID, the photo blob, MIME type, uploader principal, uploader username, and nanosecond timestamp. Expose the following functions: uploadMedia(blob: Blob, mimeType: Text) -> Result, getGalleryMedia() -> [MediaItem], deleteMedia(id: Text) -> Result. Enforce that only the two paired users can upload, view, or delete media in their gallery.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Rewrite the Motoko backend actor's stable storage initialization and upgrade hooks to safely handle the migration from a schema without mediaItems to the new schema that includes mediaItems. Use preupgrade/postupgrade hooks that never trap on upgrade, initialize all stable variables with safe defaults, and ensure the actor boots correctly whether upgrading from an older state or initializing fresh. The mediaItems stable store must be initialized as an empty structure if it does not already exist.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Audit and correct the Motoko backend function signatures for uploadMedia, getGalleryMedia, and deleteMedia to ensure they exactly match what the frontend actor interface expects. The uploadMedia function must accept a Blob (as [Nat8]) and a mimeType Text and return a Result. getGalleryMedia must return an array of MediaItem records with all fields the frontend reads (id, blob, mimeType, uploadedBy, uploaderUsername, timestamp). deleteMedia must accept an id Text and return a Result. Ensure all Candid-generated types align with the frontend declarations.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Extend Motoko backend to store call sessions (status: calling/active/ended/declined) and call history records (caller, receiver, duration, timestamp, status). Expose functions for creating, updating, and retrieving call sessions and call history. Enforce couple-only access.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Add WebRTC peer-to-peer voice call feature with Motoko canister signaling (offer/answer/ICE candidates stored on-chain, polled by both users). Build Outgoing Call screen, Incoming Call screen (Accept/Decline), and Active Call screen (partner name/avatar, live duration timer, Mute/Unmute, Speaker toggle, End Call). Use coupleId as channel identifier.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Add a 4th 'Calls' tab to the bottom tab navigator showing call history (caller, receiver, duration, timestamp, status) fetched from the Motoko backend. Match romantic rose/blush design theme.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Rewrite the Motoko backend actor's preupgrade/postupgrade stable storage hooks so they never trap on canister upgrade. Ensure all stable variables (userProfiles, messages, mediaItems, callSessions, callHistory) are initialized with safe empty defaults when upgrading from an older schema that does not contain them. The actor must boot correctly on fresh deploy and on upgrade from any prior version.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Extend the Motoko backend actor to store call sessions and call history. A CallSession record must include: id (Text), callerId (Principal), callerUsername (Text), receiverId (Principal), receiverUsername (Text), status (variant: #calling, #active, #ended, #declined), createdAt (Int), and WebRTC signaling fields: offerSDP (opt Text), answerSDP (opt Text), callerICE ([Text]), receiverICE ([Text]). A CallHistory record must include: id (Text), callerId (Principal), callerUsername (Text), receiverId (Principal), receiverUsername (Text), durationSeconds (Nat), timestamp (Int), status (variant: #ended, #declined, #missed). Expose the following update/query functions: createCallSession() -> Result<CallSession, Text>; updateCallStatus(sessionId: Text, status: CallStatus) -> Result<(), Text>; setOffer(sessionId: Text, sdp: Text) -> Result<(), Text>; setAnswer(sessionId: Text, sdp: Text) -> Result<(), Text>; addICECandidate(sessionId: Text, candidate: Text, isCallerCandidate: Bool) -> Result<(), Text>; getCallSession(sessionId: Text) -> ?CallSession; getActiveCallSession() -> ?CallSession; getCallHistory() -> [CallHistory]. Enforce that only the two paired users can create or modify a session. When a session transitions to #ended or #declined, automatically write a CallHistory record with the computed duration.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Update Motoko backend CallSession and CallHistory records to add a callType field (variant: #voice, #video). Update all related functions (createCallSession, getCallHistory, etc.) to accept and return callType. Ensure stable storage upgrade hooks handle the new field safely without trapping.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Build VideoOutgoingCallPage.tsx: show local camera preview while waiting for partner to accept. Request camera+mic permissions before starting; show friendly denial message if denied. Create a video call session (callType: #video) in Motoko, store offer SDP with video track, poll getActiveCallSession every 2 seconds. Show partner name, pulsing avatar, 'Calling…' label, and red End/Cancel button. On partner accept, set remote description and navigate to ActiveVideoCallPage. On decline/cancel, update status to #ended and return to Calls tab. Dark background, romantic accents.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Build VideoIncomingCallPage.tsx: overlay/modal shown when a callType:#video session with status #calling is detected for the current user as receiver. Display caller name/avatar, green Accept (camera icon) button, and red Decline button. On Accept: getUserMedia (audio+video), create WebRTC answer with video track, store via setAnswer, updateCallStatus to #active, navigate to ActiveVideoCallPage. On Decline: updateCallStatus to #declined and dismiss. Use romantic rose/blush design with dark call UI accents.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Build ActiveVideoCallPage.tsx: full-screen remote video feed (the other user), small draggable PiP window for local camera feed. Control bar with: Mute/Unmute audio, Camera On/Off toggle, Switch front/back camera, End Call (red). Show partner name at top and live call duration timer. Exchange ICE candidates by polling getCallSession. On End Call: updateCallStatus(#ended), stop all tracks, close RTCPeerConnection, navigate to Calls tab. If polled session becomes #ended, also clean up and navigate back. Dark background, subtle connect animation, romantic accents.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Update CallsPage.tsx to add 'Voice Call' and 'Video Call' initiate buttons at the top. Update call history entries to show a voice/video type icon alongside other user's name, direction, status, duration, and timestamp. Update IncomingCallPage overlay (and/or tab-level polling) to detect both incoming voice and incoming video call sessions and route to the correct incoming call screen.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Update the Motoko backend CallSession and CallHistory records to add a callType field (variant: #voice | #video). Update createCallSession to accept a callType parameter. Ensure getCallHistory, getCallSession, and getActiveCallSession all return callType. Update preupgrade/postupgrade stable storage hooks to handle the new field safely without trapping on upgrade from prior schema.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Add a consistent app logo and splash screen with a soft rose/pink romantic theme.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Add smooth screen transition animations across all navigators and route changes.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Add loading skeletons or spinners on all screens where data is being fetched.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Ensure all screens are responsive for small (iPhone SE) and large (iPhone Pro Max / large Android) screen sizes.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Add empty state illustrations for: empty chat, empty gallery, and no call history.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Lazy load gallery images using Intersection Observer — only load visible images.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Compress images client-side using Canvas before uploading to the Motoko canister (reduces on-chain storage usage).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Add pagination to chat messages: load last 20 messages initially, load more on scroll up.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-29",
+      "summary": "Add pagination to gallery: load 12 photos at a time.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-30",
+      "summary": "Add proper error messages for: network errors, call failures, and upload failures. Handle edge cases: dropped calls mid-way and partner unavailability.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "Generate a detailed testing checklist covering auth, chat, camera, gallery, voice calls, video calls, session persistence, and browser-based two-tab/two-browser testing steps.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-32",
+      "summary": "Generate a final README.md with full project overview, step-by-step setup for ICP/DFX/Vite/pnpm, how to run locally and deploy to ICP mainnet, and required environment variables.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-43",
+      "summary": "Generate a detailed testing checklist as a static document (frontend/public/TESTING_CHECKLIST.md or rendered as a page) covering: (1) Auth flow: register, pair, login, logout, session persistence across browser refresh; (2) Chat: send message, receive message via polling, read receipts toggling, pagination; (3) Camera: photo capture, front/back toggle, flash toggle, compression, upload, retake; (4) Gallery: view grid, full-screen tap, pinch-to-zoom, long-press delete, confirmation, pagination; (5) Voice Call: initiate, receive overlay, accept, decline, mute, speaker toggle, end call, partner hang-up, dropped connection; (6) Video Call: initiate, permission denied flow, receive overlay, accept, decline, camera toggle, front/back switch, PiP drag, end call, partner hang-up; (7) Two-browser testing steps: open app in two browser tabs/windows with two different Internet Identity accounts, verify pairing and real-time interaction.",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-44",
+      "summary": "Generate a README.md at the project root covering: (1) Full project overview describing OnlyUs as a private 2-user couples web app on the Internet Computer; (2) Architecture overview: React/TypeScript frontend + Motoko backend on ICP; (3) Step-by-step local setup: prerequisites (DFX, Node.js, pnpm), clone, install, dfx start, dfx deploy; (4) How to run locally with hot reload; (5) How to deploy to ICP mainnet (dfx deploy --network ic); (6) Required environment variables (.env format) including canister IDs; (7) Feature summary: Auth, Chat, Camera, Gallery, Voice Calls, Video Calls; (8) Security notes: couple-only principal enforcement in Motoko, camera media stays in-memory.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "OnlyUs",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

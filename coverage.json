@@ -1,0 +1,253 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-24T17:48:55.401Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 12,
+    "implemented": 10,
+    "items": [
+      {
+        "id": "REQ-30",
+        "summary": "Add an app logo mark (a small intertwined hearts or rose motif) and a splash/loading screen that displays the logo centered on a blush-white (#FFF0F5) background with the app name 'OnlyUs' in a romantic serif font and a subtle fade-in animation. Show the splash screen on initial app load before the auth state is resolved.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/SplashScreen.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/SplashScreen.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-31",
+        "summary": "Add smooth CSS-based page transition animations (fade-in + subtle slide-up) for all route/screen changes in App.tsx — including transitions between LandingPage, RegistrationPage, PairingPage, and the tab navigator, as well as transitions between call screens. Use a short duration (200–300 ms) and respect prefers-reduced-motion.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-32",
+        "summary": "Add skeleton loading states and spinners across all data-fetching screens: (1) ChatPage: show skeleton message bubbles while messages load; (2) GalleryPage: show skeleton grid cells while media loads; (3) CallsPage: show skeleton call history cards while call history loads; (4) LandingPage/App: show a centered spinner while auth state or profile is resolving. Use the existing rose/blush color palette for skeleton shimmer colors.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/SkeletonMessageBubble.tsx",
+          "frontend/src/components/SkeletonGridCell.tsx",
+          "frontend/src/components/SkeletonCallCard.tsx",
+          "frontend/src/components/LoadingSpinner.tsx",
+          "frontend/src/pages/ChatPage.tsx",
+          "frontend/src/pages/GalleryPage.tsx",
+          "frontend/src/pages/CallsPage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/SkeletonMessageBubble.tsx",
+          "frontend/src/components/SkeletonGridCell.tsx",
+          "frontend/src/components/SkeletonCallCard.tsx",
+          "frontend/src/components/LoadingSpinner.tsx",
+          "frontend/src/pages/ChatPage.tsx",
+          "frontend/src/pages/GalleryPage.tsx",
+          "frontend/src/pages/CallsPage.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-33",
+        "summary": "Audit and fix all screen layouts to be fully responsive from 320px (iPhone SE) up to 430px+ (iPhone Pro Max / large Android). Use fluid typography and spacing with Tailwind responsive utilities. Ensure: chat bubbles don't overflow on narrow screens; gallery grid cells maintain square aspect ratio; call screens center content correctly; bottom tab bar is always visible and not obscured by safe area insets. Add safe area padding using env(safe-area-inset-bottom) on the bottom tab bar.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/ChatPage.tsx",
+          "frontend/src/pages/GalleryPage.tsx",
+          "frontend/src/components/BottomTabNavigator.tsx",
+          "frontend/src/pages/ActiveCallPage.tsx",
+          "frontend/src/pages/ActiveVideoCallPage.tsx",
+          "frontend/src/pages/OutgoingCallPage.tsx",
+          "frontend/src/pages/VideoOutgoingCallPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/ChatPage.tsx",
+          "frontend/src/pages/GalleryPage.tsx",
+          "frontend/src/components/BottomTabNavigator.tsx",
+          "frontend/src/pages/ActiveCallPage.tsx",
+          "frontend/src/pages/ActiveVideoCallPage.tsx",
+          "frontend/src/pages/OutgoingCallPage.tsx",
+          "frontend/src/pages/VideoOutgoingCallPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-34",
+        "summary": "Add empty state illustrations/messages for three screens: (1) ChatPage: when no messages exist, show a centered rose-toned heart illustration with the text 'Say hello to your person 💕'; (2) GalleryPage: when no media items exist, show a soft camera/flower illustration with the text 'Your shared memories will appear here 🌸'; (3) CallsPage: the existing 'No calls yet 💕' message should be accompanied by a small phone/heart illustration. Use inline SVG or a generated static asset for illustrations consistent with the romantic theme.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/EmptyStateChat.tsx",
+          "frontend/src/components/EmptyStateGallery.tsx",
+          "frontend/src/components/EmptyStateCalls.tsx",
+          "frontend/src/pages/ChatPage.tsx",
+          "frontend/src/pages/GalleryPage.tsx",
+          "frontend/src/pages/CallsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/EmptyStateChat.tsx",
+          "frontend/src/components/EmptyStateGallery.tsx",
+          "frontend/src/components/EmptyStateCalls.tsx",
+          "frontend/src/pages/ChatPage.tsx",
+          "frontend/src/pages/GalleryPage.tsx",
+          "frontend/src/pages/CallsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-35",
+        "summary": "Implement lazy loading for gallery images in GalleryPage using the Intersection Observer API (or the native loading='lazy' attribute on img elements). Images outside the visible viewport must not be fetched until they scroll into view. Add a low-resolution placeholder or a blurred background-color placeholder while the image is loading.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/GalleryPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/GalleryPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-36",
+        "summary": "Add client-side image compression in CameraPage before uploading to the Motoko backend. After the user taps 'Save to Our Gallery', resize the captured photo using an HTMLCanvasElement so that neither dimension exceeds 1280px, then re-encode as JPEG at 0.82 quality before converting to [Nat8] for the uploadMedia call. Show the compressed file size in the preview UI alongside the original size.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/compressImage.ts",
+          "frontend/src/pages/CameraPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/compressImage.ts",
+          "frontend/src/pages/CameraPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-37",
+        "summary": "Add pagination to the Motoko backend's getMessages function: accept optional offset and limit parameters (default limit 20). On the frontend ChatPage, load the most recent 20 messages on mount. When the user scrolls to the top of the chat, fetch the previous page (next 20 older messages) and prepend them to the list without losing scroll position. Show a 'Load earlier messages' indicator at the top while fetching.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/ChatPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/ChatPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-38",
+        "summary": "Add pagination to the Motoko backend's getGalleryMedia function: accept optional offset and limit parameters (default limit 12). On the frontend GalleryPage, load the first 12 items on mount. Show a 'Load more' button at the bottom of the grid that fetches the next 12 items and appends them. Hide the button when all items are loaded.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/GalleryPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/GalleryPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-39",
+        "summary": "Add comprehensive error handling and user-facing error messages across the app: (1) Network/actor errors on any page must show a dismissible toast or inline message in the rose/blush style (e.g. 'Connection failed. Please try again.'); (2) Upload failures in CameraPage must show 'Upload failed — please try again' and re-enable the Save button; (3) Call creation/connection failures in OutgoingCallPage and VideoOutgoingCallPage must show 'Call failed to connect' and return to the Calls tab; (4) If a call is dropped mid-way (RTCPeerConnection state becomes 'failed' or 'disconnected'), show a brief 'Call ended unexpectedly' message before navigating back; (5) If the partner is unavailable (no active call session found after initiating), surface a clear message. All error states must not crash the app.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/ErrorToast.tsx",
+          "frontend/src/hooks/useErrorToast.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/CameraPage.tsx",
+          "frontend/src/pages/OutgoingCallPage.tsx",
+          "frontend/src/pages/VideoOutgoingCallPage.tsx",
+          "frontend/src/pages/ActiveCallPage.tsx",
+          "frontend/src/pages/ActiveVideoCallPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/ErrorToast.tsx",
+          "frontend/src/hooks/useErrorToast.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/CameraPage.tsx",
+          "frontend/src/pages/OutgoingCallPage.tsx",
+          "frontend/src/pages/VideoOutgoingCallPage.tsx",
+          "frontend/src/pages/ActiveCallPage.tsx",
+          "frontend/src/pages/ActiveVideoCallPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-40",
+        "summary": "Generate a detailed testing checklist as a static document (frontend/public/TESTING_CHECKLIST.md or rendered as a page) covering: (1) Auth flow: register, pair, login, logout, session persistence across browser refresh; (2) Chat: send message, receive message via polling, read receipts toggling, pagination; (3) Camera: photo capture, front/back toggle, flash toggle, compression, upload, retake; (4) Gallery: view grid, full-screen tap, pinch-to-zoom, long-press delete, confirmation, pagination; (5) Voice Call: initiate, receive overlay, accept, decline, mute, speaker toggle, end call, partner hang-up, dropped connection; (6) Video Call: initiate, permission denied flow, receive overlay, accept, decline, camera toggle, front/back switch, PiP drag, end call, partner hang-up; (7) Two-browser testing steps: open app in two browser tabs/windows with two different Internet Identity accounts, verify pairing and real-time interaction.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/public/TESTING_CHECKLIST.md"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-41",
+        "summary": "Generate a README.md at the project root covering: (1) Full project overview describing OnlyUs as a private 2-user couples web app on the Internet Computer; (2) Architecture overview: React/TypeScript frontend + Motoko backend on ICP; (3) Step-by-step local setup: prerequisites (DFX, Node.js, pnpm), clone, install, dfx start, dfx deploy; (4) How to run locally with hot reload; (5) How to deploy to ICP mainnet (dfx deploy --network ic); (6) Required environment variables (.env format) including canister IDs; (7) Feature summary: Auth, Chat, Camera, Gallery, Voice Calls, Video Calls; (8) Security notes: couple-only principal enforcement in Motoko, camera media stays in-memory.",
+        "status": "missing",
+        "plannedFiles": [
+          "README.md"
+        ],
+        "matchedFiles": []
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/blob-storage/Mixin.mo",
+    "backend/blob-storage/Storage.mo",
+    "backend/main.mo",
+    "build-request.json",
+    "caffeine.lock.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/empty-calls.dim_400x300.png",
+    "frontend/public/assets/generated/empty-chat.dim_400x300.png",
+    "frontend/public/assets/generated/empty-gallery.dim_400x300.png",
+    "frontend/public/assets/generated/onlyus-logo.dim_256x256.png",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/BottomTabNavigator.tsx",
+    "frontend/src/components/EmptyStateCalls.tsx",
+    "frontend/src/components/EmptyStateChat.tsx",
+    "frontend/src/components/EmptyStateGallery.tsx",
+    "frontend/src/components/ErrorToast.tsx",
+    "frontend/src/components/IncomingCallOverlay.tsx",
+    "frontend/src/components/LoadingSpinner.tsx",
+    "frontend/src/components/SkeletonCallCard.tsx",
+    "frontend/src/components/SkeletonGridCell.tsx",
+    "frontend/src/components/SkeletonMessageBubble.tsx",
+    "frontend/src/components/SplashScreen.tsx",
+    "frontend/src/components/VideoIncomingCallOverlay.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useErrorToast.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/ActiveCallPage.tsx",
+    "frontend/src/pages/ActiveVideoCallPage.tsx",
+    "frontend/src/pages/CallsPage.tsx",
+    "frontend/src/pages/CameraPage.tsx",
+    "frontend/src/pages/ChatPage.tsx",
+    "frontend/src/pages/GalleryPage.tsx",
+    "frontend/src/pages/OutgoingCallPage.tsx",
+    "frontend/src/pages/VideoOutgoingCallPage.tsx",
+    "frontend/src/utils/compressImage.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

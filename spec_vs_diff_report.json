@@ -1,0 +1,78 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-24T17:48:55.393Z",
+  "summary": "The diff implements the majority of the 12 requirements (REQ-30 through REQ-41). Most frontend requirements are well-covered: splash screen, skeletons, empty states, error toasts, image compression, chat/gallery pagination, responsive bottom tab bar, page transition CSS, lazy loading, and call error handling are all present. The Motoko backend pagination for getMessages and getGalleryMedia appears to be addressed. However, REQ-40 (testing checklist document) and REQ-41 (README.md) are not evidenced in the diff. REQ-31's animated wrapper in App.tsx is truncated and cannot be fully confirmed. REQ-35's Intersection Observer usage is not confirmed in the visible diff.",
+  "missing_requirements": [
+    {
+      "id": "REQ-40",
+      "requirement": "Generate a detailed testing checklist as a static document (frontend/public/TESTING_CHECKLIST.md or rendered as a page) covering all 7 sections.",
+      "reason": "No file named TESTING_CHECKLIST.md or any rendered testing checklist page appears in the added or modified files list.",
+      "evidence": []
+    },
+    {
+      "id": "REQ-41",
+      "requirement": "Generate a README.md at the project root covering project overview, architecture, local setup, deploy to mainnet, environment variables, feature summary, and security notes.",
+      "reason": "No README.md file appears in the added or modified files list.",
+      "evidence": []
+    },
+    {
+      "id": "REQ-31",
+      "requirement": "All route/screen changes in App.tsx must animate with fade-in and subtle slide-up using CSS transitions, respecting prefers-reduced-motion.",
+      "reason": "While page-enter CSS classes are defined in index.css with correct duration and prefers-reduced-motion media query, the App.tsx diff is truncated and it cannot be confirmed that the animated wrapper is applied to all screen transitions including call screens.",
+      "evidence": [
+        "frontend/src/index.css",
+        "frontend/src/App.tsx"
+      ]
+    },
+    {
+      "id": "REQ-35",
+      "requirement": "Implement lazy loading using the Intersection Observer API or native loading='lazy'. Images outside the viewport must not be fetched until scrolled into view, with a blush-tinted placeholder shown before image loads.",
+      "reason": "GalleryPage is modified and uses ExternalBlob.getDirectURL() for image URLs, but the visible portion of GalleryPage.tsx does not show explicit Intersection Observer implementation or loading='lazy' attributes with placeholder styling.",
+      "evidence": [
+        "frontend/src/pages/GalleryPage.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Global singleton error toast provider using a module-level mutable reference (globalSetState) allowing showError to be called outside the React component tree.",
+      "reason": "The build request asked for dismissible error toasts but did not specify or require a global singleton setter pattern; this architectural choice was not requested.",
+      "evidence": [
+        "frontend/src/hooks/useErrorToast.ts"
+      ]
+    }
+  ],
+  "confidence": 0.72,
+  "changed_files": [
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/App.tsx",
+    "frontend/src/components/BottomTabNavigator.tsx",
+    "frontend/src/components/EmptyStateCalls.tsx",
+    "frontend/src/components/EmptyStateChat.tsx",
+    "frontend/src/components/EmptyStateGallery.tsx",
+    "frontend/src/components/ErrorToast.tsx",
+    "frontend/src/components/IncomingCallOverlay.tsx",
+    "frontend/src/components/LoadingSpinner.tsx",
+    "frontend/src/components/SkeletonCallCard.tsx",
+    "frontend/src/components/SkeletonGridCell.tsx",
+    "frontend/src/components/SkeletonMessageBubble.tsx",
+    "frontend/src/components/SplashScreen.tsx",
+    "frontend/src/components/VideoIncomingCallOverlay.tsx",
+    "frontend/src/hooks/useErrorToast.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/ActiveCallPage.tsx",
+    "frontend/src/pages/ActiveVideoCallPage.tsx",
+    "frontend/src/pages/CallsPage.tsx",
+    "frontend/src/pages/CameraPage.tsx",
+    "frontend/src/pages/ChatPage.tsx",
+    "frontend/src/pages/GalleryPage.tsx",
+    "frontend/src/pages/OutgoingCallPage.tsx",
+    "frontend/src/pages/VideoOutgoingCallPage.tsx",
+    "frontend/src/utils/compressImage.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

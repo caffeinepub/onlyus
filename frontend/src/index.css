@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Romantic blush/rose palette in OKLCH */
+    --background: oklch(0.98 0.01 10);
+    --foreground: oklch(0.25 0.04 15);
+
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.25 0.04 15);
+
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.25 0.04 15);
+
+    --primary: oklch(0.62 0.18 10);
+    --primary-foreground: oklch(1 0 0);
+
+    --secondary: oklch(0.94 0.03 10);
+    --secondary-foreground: oklch(0.35 0.06 15);
+
+    --muted: oklch(0.95 0.02 10);
+    --muted-foreground: oklch(0.55 0.06 15);
+
+    --accent: oklch(0.70 0.14 30);
+    --accent-foreground: oklch(1 0 0);
+
+    --destructive: oklch(0.55 0.22 25);
+    --destructive-foreground: oklch(1 0 0);
+
+    --border: oklch(0.90 0.03 10);
+    --input: oklch(0.90 0.03 10);
+    --ring: oklch(0.62 0.18 10);
+
+    --radius: 0.75rem;
+
+    /* Custom romantic tokens */
+    --blush-white: oklch(0.97 0.015 10);
+    --rose-pink: oklch(0.62 0.18 10);
+    --warm-accent: oklch(0.70 0.14 30);
+    --rose-dark: oklch(0.35 0.10 15);
+  }
+
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+  }
+
+  #root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .font-serif {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer utilities {
+  .bg-blush-white {
+    background-color: var(--blush-white);
+  }
+  .bg-rose-pink {
+    background-color: var(--rose-pink);
+  }
+  .bg-warm-accent {
+    background-color: var(--warm-accent);
+  }
+  .bg-rose-dark {
+    background-color: var(--rose-dark);
+  }
+  .text-rose-pink {
+    color: var(--rose-pink);
+  }
+  .text-warm-accent {
+    color: var(--warm-accent);
+  }
+  .text-rose-dark {
+    color: var(--rose-dark);
+  }
+  .border-rose-pink {
+    border-color: var(--rose-pink);
+  }
+  .shadow-romantic {
+    box-shadow: 0 4px 24px oklch(0.62 0.18 10 / 0.15);
+  }
+}
+
+/* Page transition animations */
+.page-enter {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .page-enter-active {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Shimmer animation for skeletons */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.94 0.03 10) 25%,
+    oklch(0.97 0.015 10) 50%,
+    oklch(0.94 0.03 10) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Pulse dots animation */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(0.62 0.18 10 / 0.3);
+  border-radius: 2px;
+}

@@ -1,0 +1,271 @@
+{
+  "kind": "build_request",
+  "title": "Final Polish Phase: UI, Performance, Error Handling, Testing Checklist & README",
+  "projectName": "OnlyUs",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-30",
+      "text": "Add an app logo mark (a small intertwined hearts or rose motif) and a splash/loading screen that displays the logo centered on a blush-white (#FFF0F5) background with the app name 'OnlyUs' in a romantic serif font and a subtle fade-in animation. Show the splash screen on initial app load before the auth state is resolved.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Add a consistent app logo and splash screen (soft rose/pink romantic theme)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A splash screen is shown before auth state resolves, centered on #FFF0F5 background",
+        "App name 'OnlyUs' renders in a romantic serif/rounded font",
+        "Logo uses a rose/blush heart or floral motif consistent with the existing design palette",
+        "Splash fades in and transitions out smoothly once auth state is ready"
+      ]
+    },
+    {
+      "id": "REQ-31",
+      "text": "Add smooth CSS-based page transition animations (fade-in + subtle slide-up) for all route/screen changes in App.tsx — including transitions between LandingPage, RegistrationPage, PairingPage, and the tab navigator, as well as transitions between call screens. Use a short duration (200–300 ms) and respect prefers-reduced-motion.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Add smooth screen transition animations across all navigators"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All screen transitions animate with fade-in and a subtle upward slide",
+        "Duration is 200–300 ms",
+        "No layout shift or flash of unstyled content during transitions",
+        "Animations are disabled when prefers-reduced-motion is set"
+      ]
+    },
+    {
+      "id": "REQ-32",
+      "text": "Add skeleton loading states and spinners across all data-fetching screens: (1) ChatPage: show skeleton message bubbles while messages load; (2) GalleryPage: show skeleton grid cells while media loads; (3) CallsPage: show skeleton call history cards while call history loads; (4) LandingPage/App: show a centered spinner while auth state or profile is resolving. Use the existing rose/blush color palette for skeleton shimmer colors.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Add loading skeletons or spinners wherever data is being fetched"
+        ]
+      },
+      "acceptanceCriteria": [
+        "ChatPage shows skeleton message bubbles in the loading state",
+        "GalleryPage shows a 3-column skeleton grid while media is fetching",
+        "CallsPage shows skeleton cards while call history is loading",
+        "Auth/profile resolution shows a centered spinner on blush-white background",
+        "Skeletons use rose/blush shimmer animation consistent with the design theme"
+      ]
+    },
+    {
+      "id": "REQ-33",
+      "text": "Audit and fix all screen layouts to be fully responsive from 320px (iPhone SE) up to 430px+ (iPhone Pro Max / large Android). Use fluid typography and spacing with Tailwind responsive utilities. Ensure: chat bubbles don't overflow on narrow screens; gallery grid cells maintain square aspect ratio; call screens center content correctly; bottom tab bar is always visible and not obscured by safe area insets. Add safe area padding using env(safe-area-inset-bottom) on the bottom tab bar.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Make sure all screens are responsive for both small (iPhone SE) and large (iPhone Pro Max / large Android) screens"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All screens render without horizontal scroll at 320px viewport width",
+        "Chat bubbles truncate or wrap gracefully on narrow screens",
+        "Gallery grid maintains square cells at all screen widths",
+        "Bottom tab bar accounts for env(safe-area-inset-bottom) and is never obscured",
+        "Call screens (active, outgoing, incoming) center content on all tested sizes"
+      ]
+    },
+    {
+      "id": "REQ-34",
+      "text": "Add empty state illustrations/messages for three screens: (1) ChatPage: when no messages exist, show a centered rose-toned heart illustration with the text 'Say hello to your person 💕'; (2) GalleryPage: when no media items exist, show a soft camera/flower illustration with the text 'Your shared memories will appear here 🌸'; (3) CallsPage: the existing 'No calls yet 💕' message should be accompanied by a small phone/heart illustration. Use inline SVG or a generated static asset for illustrations consistent with the romantic theme.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Add empty state illustrations for: empty chat, empty gallery, no call history"
+        ]
+      },
+      "acceptanceCriteria": [
+        "ChatPage shows the empty state when message list is empty",
+        "GalleryPage shows the empty state when media list is empty",
+        "CallsPage empty state includes a small decorative illustration",
+        "All empty states use rose/blush colors consistent with the design theme",
+        "Empty states do not appear during loading — only after data has resolved to empty"
+      ]
+    },
+    {
+      "id": "REQ-35",
+      "text": "Implement lazy loading for gallery images in GalleryPage using the Intersection Observer API (or the native loading='lazy' attribute on img elements). Images outside the visible viewport must not be fetched until they scroll into view. Add a low-resolution placeholder or a blurred background-color placeholder while the image is loading.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Lazy load gallery images (only load visible ones)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Images not in the viewport are not loaded on initial render",
+        "Images load as they scroll into the viewport",
+        "A placeholder (blush-tinted background or shimmer) is shown before image loads",
+        "No visual layout shift when images load in"
+      ]
+    },
+    {
+      "id": "REQ-36",
+      "text": "Add client-side image compression in CameraPage before uploading to the Motoko backend. After the user taps 'Save to Our Gallery', resize the captured photo using an HTMLCanvasElement so that neither dimension exceeds 1280px, then re-encode as JPEG at 0.82 quality before converting to [Nat8] for the uploadMedia call. Show the compressed file size in the preview UI alongside the original size.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Compress images before uploading to Firebase Storage to reduce storage usage"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Captured photos are resized to a max dimension of 1280px before upload",
+        "Re-encoded as JPEG at 0.82 quality using HTMLCanvasElement",
+        "The compressed [Nat8] array is passed to uploadMedia instead of the raw blob",
+        "Preview screen shows original vs. compressed file size",
+        "Compression happens before the upload loading indicator appears"
+      ]
+    },
+    {
+      "id": "REQ-37",
+      "text": "Add pagination to the Motoko backend's getMessages function: accept optional offset and limit parameters (default limit 20). On the frontend ChatPage, load the most recent 20 messages on mount. When the user scrolls to the top of the chat, fetch the previous page (next 20 older messages) and prepend them to the list without losing scroll position. Show a 'Load earlier messages' indicator at the top while fetching.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Add pagination to chat messages (load last 20, load more on scroll up)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "getMessages in Motoko accepts offset and limit parameters",
+        "ChatPage fetches only the last 20 messages on initial load",
+        "Scrolling to the top triggers a fetch of the previous 20 messages",
+        "Previously loaded messages are preserved and older messages are prepended",
+        "Scroll position is maintained after prepending older messages",
+        "A loading indicator is shown at the top while older messages are fetching",
+        "No more-messages indicator is shown when all messages are loaded"
+      ]
+    },
+    {
+      "id": "REQ-38",
+      "text": "Add pagination to the Motoko backend's getGalleryMedia function: accept optional offset and limit parameters (default limit 12). On the frontend GalleryPage, load the first 12 items on mount. Show a 'Load more' button at the bottom of the grid that fetches the next 12 items and appends them. Hide the button when all items are loaded.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Add pagination to gallery (load 12 at a time)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "getGalleryMedia in Motoko accepts offset and limit parameters",
+        "GalleryPage loads 12 items on initial mount",
+        "A 'Load more' button appends the next 12 items to the grid",
+        "The button is hidden when there are no more items to load",
+        "Existing items are not re-fetched or re-ordered when loading more"
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "text": "Add comprehensive error handling and user-facing error messages across the app: (1) Network/actor errors on any page must show a dismissible toast or inline message in the rose/blush style (e.g. 'Connection failed. Please try again.'); (2) Upload failures in CameraPage must show 'Upload failed — please try again' and re-enable the Save button; (3) Call creation/connection failures in OutgoingCallPage and VideoOutgoingCallPage must show 'Call failed to connect' and return to the Calls tab; (4) If a call is dropped mid-way (RTCPeerConnection state becomes 'failed' or 'disconnected'), show a brief 'Call ended unexpectedly' message before navigating back; (5) If the partner is unavailable (no active call session found after initiating), surface a clear message. All error states must not crash the app.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Add proper error messages for: wrong password, network errors, call failed, upload failed",
+          "Handle edge cases: what if one user deletes the app? what if call is dropped mid-way?"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Network/actor errors show a dismissible rose-styled toast or inline error message",
+        "Upload failures re-enable the Save button and show a retry message",
+        "Call connection failures show a clear message and return to Calls tab automatically",
+        "A dropped call (RTCPeerConnection failed/disconnected state) shows 'Call ended unexpectedly' before navigating back",
+        "No unhandled exceptions reach the React error boundary for any of these cases"
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "text": "Generate a detailed testing checklist as a static document (frontend/public/TESTING_CHECKLIST.md or rendered as a page) covering: (1) Auth flow: register, pair, login, logout, session persistence across browser refresh; (2) Chat: send message, receive message via polling, read receipts toggling, pagination; (3) Camera: photo capture, front/back toggle, flash toggle, compression, upload, retake; (4) Gallery: view grid, full-screen tap, pinch-to-zoom, long-press delete, confirmation, pagination; (5) Voice Call: initiate, receive overlay, accept, decline, mute, speaker toggle, end call, partner hang-up, dropped connection; (6) Video Call: initiate, permission denied flow, receive overlay, accept, decline, camera toggle, front/back switch, PiP drag, end call, partner hang-up; (7) Two-browser testing steps: open app in two browser tabs/windows with two different Internet Identity accounts, verify pairing and real-time interaction.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "generate a detailed checklist covering"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Checklist covers all 7 sections listed above",
+        "Each checklist item is actionable and testable",
+        "Two-browser testing section gives explicit step-by-step instructions",
+        "Document is accessible from the project (either as a public asset or rendered page)"
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "text": "Generate a README.md at the project root covering: (1) Full project overview describing OnlyUs as a private 2-user couples web app on the Internet Computer; (2) Architecture overview: React/TypeScript frontend + Motoko backend on ICP; (3) Step-by-step local setup: prerequisites (DFX, Node.js, pnpm), clone, install, dfx start, dfx deploy; (4) How to run locally with hot reload; (5) How to deploy to ICP mainnet (dfx deploy --network ic); (6) Required environment variables (.env format) including canister IDs; (7) Feature summary: Auth, Chat, Camera, Gallery, Voice Calls, Video Calls; (8) Security notes: couple-only principal enforcement in Motoko, camera media stays in-memory.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "generate a final README.md with: Full project overview, Step by step setup instructions, How to run on Android and iOS, How to build for production, Environment variables needed"
+        ]
+      },
+      "acceptanceCriteria": [
+        "README.md exists at the project root",
+        "Local setup instructions work end-to-end for a fresh clone",
+        "Deploy-to-mainnet section uses correct dfx CLI commands",
+        "Environment variables section is in .env format",
+        "Architecture and feature sections are accurate to the ICP/Motoko/React stack"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not change the Motoko backend data model for callType, user profiles, or pairing logic beyond what REQ-37 and REQ-38 require.",
+    "Do not use Firebase, Expo, Agora, or any external backend services — all storage and signaling remains on-chain via Motoko.",
+    "Camera media must never be written to the native device photo gallery.",
+    "Do not modify files listed in frontend.immutablePaths.",
+    "Pagination changes to getMessages and getGalleryMedia must be backward-compatible (existing callers with no offset/limit get default behavior)."
+  ],
+  "nonGoals": [
+    "Push notifications (FCM, Expo Notifications, Web Push) — not supported on this platform.",
+    "Firebase Storage or Firestore security rules — not applicable to this ICP stack.",
+    "Native mobile app builds (iOS/Android via Expo or React Native).",
+    "Video recording (camera screen is photos only as per existing implementation).",
+    "User account deletion or couple unpairing flows.",
+    "Dark mode support."
+  ],
+  "imageRequirements": {
+    "required": [
+      "Minimal romantic app logo mark featuring two intertwined hearts or a small rose blossom in rose pink (#E8A0BF) and warm accent (#C0557A) on a transparent background (onlyus-logo.dim_256x256.png)",
+      "Soft illustrated empty state for chat: a single delicate pink heart with small floating sparkles on a transparent background (empty-chat.dim_400x300.png)",
+      "Soft illustrated empty state for gallery: a small vintage camera with a pink rose bloom beside it on a transparent background (empty-gallery.dim_400x300.png)",
+      "Soft illustrated empty state for call history: a small phone handset with a pink heart above it on a transparent background (empty-calls.dim_400x300.png)"
+    ],
+    "edits": []
+  }
+}

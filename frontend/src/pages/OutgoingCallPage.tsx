@@ -1,0 +1,168 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { useGetCallSession, useUpdateCallStatus, useSetOffer, useAddICECandidate } from '../hooks/useQueries';
+import { CallStatus } from '../backend';
+import { useErrorToast } from '../hooks/useErrorToast';
+import { PhoneOff, Loader2 } from 'lucide-react';
+
+interface OutgoingCallPageProps {
+  partnerId: string;
+  partnerName: string;
+  sessionId: string;
+  onConnected: (sessionId: string) => void;
+  onCancelled: () => void;
+}
+
+export default function OutgoingCallPage({
+  partnerId,
+  partnerName,
+  sessionId,
+  onConnected,
+  onCancelled,
+}: OutgoingCallPageProps) {
+  const { showError } = useErrorToast();
+  const peerRef = useRef<RTCPeerConnection | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const connectedRef = useRef(false);
+
+  const { data: session } = useGetCallSession(sessionId);
+  const updateStatus = useUpdateCallStatus();
+  const setOffer = useSetOffer();
+  const addICE = useAddICECandidate();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const setup = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+
+        const pc = new RTCPeerConnection({
+          iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+        });
+        peerRef.current = pc;
+
+        stream.getTracks().forEach((t) => pc.addTrack(t, stream));
+
+        pc.onicecandidate = async (e) => {
+          if (e.candidate) {
+            try {
+              await addICE.mutateAsync({
+                sessionId,
+                candidate: JSON.stringify(e.candidate),
+                isCallerCandidate: true,
+              });
+            } catch {}
+          }
+        };
+
+        pc.oniceconnectionstatechange = () => {
+          const state = pc.iceConnectionState;
+          if ((state === 'failed' || state === 'disconnected') && !connectedRef.current) {
+            showError('Call failed to connect');
+            setTimeout(onCancelled, 1500);
+          } else if (state === 'failed' || state === 'disconnected') {
+            showError('Call ended unexpectedly');
+            setTimeout(onCancelled, 1500);
+          }
+        };
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        await setOffer.mutateAsync({ sessionId, sdp: JSON.stringify(offer) });
+      } catch (err: any) {
+        if (!cancelled) {
+          showError('Call failed to connect — please try again');
+          setTimeout(onCancelled, 1500);
+        }
+      }
+    };
+
+    setup();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId]);
+
+  // Watch for answer
+  useEffect(() => {
+    if (!session || connectedRef.current) return;
+
+    if (session.status === CallStatus.declined) {
+      showError('Call was declined');
+      onCancelled();
+      return;
+    }
+
+    if (session.answerSDP && peerRef.current && peerRef.current.signalingState !== 'stable') {
+      const applyAnswer = async () => {
+        try {
+          const answer = JSON.parse(session.answerSDP!);
+          await peerRef.current!.setRemoteDescription(new RTCSessionDescription(answer));
+
+          // Apply receiver ICE candidates
+          for (const candidateStr of session.receiverICE) {
+            try {
+              const candidate = JSON.parse(candidateStr);
+              await peerRef.current!.addIceCandidate(new RTCIceCandidate(candidate));
+            } catch {}
+          }
+
+          if (session.status === CallStatus.active) {
+            connectedRef.current = true;
+            await updateStatus.mutateAsync({ sessionId, status: CallStatus.active });
+            onConnected(sessionId);
+          }
+        } catch (err) {
+          showError('Call failed to connect');
+          setTimeout(onCancelled, 1500);
+        }
+      };
+      applyAnswer();
+    }
+  }, [session]);
+
+  const handleCancel = async () => {
+    setIsCancelling(true);
+    try {
+      await updateStatus.mutateAsync({ sessionId, status: CallStatus.ended });
+    } catch {}
+    peerRef.current?.close();
+    onCancelled();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-rose-dark">
+      <div className="flex flex-col items-center gap-6 px-6 text-center">
+        <div className="w-24 h-24 rounded-full bg-rose-pink/30 flex items-center justify-center">
+          <span className="text-5xl">💕</span>
+        </div>
+        <div>
+          <p className="text-white/70 text-sm mb-1">Calling</p>
+          <h2 className="font-serif text-3xl text-white font-bold">{partnerName}</h2>
+        </div>
+        <div className="flex gap-1">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="w-2 h-2 rounded-full bg-white/60"
+              style={{ animation: `pulse 1.4s ease-in-out ${i * 0.2}s infinite` }}
+            />
+          ))}
+        </div>
+        <button
+          onClick={handleCancel}
+          disabled={isCancelling}
+          className="mt-8 w-16 h-16 rounded-full bg-red-500 flex items-center justify-center text-white hover:bg-red-600 transition-colors disabled:opacity-50"
+        >
+          {isCancelling ? <Loader2 size={24} className="animate-spin" /> : <PhoneOff size={24} />}
+        </button>
+        <p className="text-white/50 text-xs">Tap to cancel</p>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,376 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Final Polish Phase: UI, Performance, Error Handling, Testing Checklist & README",
+  "requirements": [
+    {
+      "id": "REQ-30",
+      "summary": "Add app logo mark and splash/loading screen with romantic theme and fade-in animation",
+      "acceptanceCriteria": [
+        "A splash screen is shown before auth state resolves, centered on #FFF0F5 background",
+        "App name 'OnlyUs' renders in a romantic serif/rounded font",
+        "Logo uses a rose/blush heart or floral motif consistent with the existing design palette",
+        "Splash fades in and transitions out smoothly once auth state is ready"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/SplashScreen.tsx",
+          "operation": "create",
+          "description": "Create a SplashScreen component that displays the generated logo (frontend/public/assets/generated/onlyus-logo.dim_256x256.png) centered on a blush-white (#FFF0F5) background with the app name 'OnlyUs' in a romantic serif font (e.g., Playfair Display or Merriweather). Add a subtle fade-in animation for the logo and text using CSS transitions or Tailwind animate utilities. The component should accept a 'show' prop to control visibility and include a fade-out transition when hidden."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Import and render the SplashScreen component conditionally before the main app content. Show the splash screen while authentication state is resolving (identity is being loaded from AuthClient). Hide the splash screen once the auth state is ready (after useInternetIdentity returns a stable identity or confirms anonymous). Ensure the splash screen overlays the entire viewport using fixed positioning and z-index."
+        }
+      ]
+    },
+    {
+      "id": "REQ-31",
+      "summary": "Add smooth CSS-based page transition animations for all route/screen changes with prefers-reduced-motion support",
+      "acceptanceCriteria": [
+        "All screen transitions animate with fade-in and a subtle upward slide",
+        "Duration is 200–300 ms",
+        "No layout shift or flash of unstyled content during transitions",
+        "Animations are disabled when prefers-reduced-motion is set"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add global CSS classes for page transitions: define .page-enter with initial opacity 0 and transform translateY(20px), .page-enter-active with transition duration 250ms and easing, and .page-enter-done with opacity 1 and transform translateY(0). Add a @media (prefers-reduced-motion: reduce) rule that disables all transition animations by setting transition: none."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wrap the conditionally rendered page components (LandingPage, RegistrationPage, PairingPage, BottomTabNavigator + tab content, call pages, call overlays) in a transition wrapper that applies the page-enter animation classes. Use a React state key tied to the current page/tab to trigger re-animation on route changes. Ensure the wrapper uses the transition classes defined in index.css."
+        }
+      ]
+    },
+    {
+      "id": "REQ-32",
+      "summary": "Add skeleton loading states and spinners across all data-fetching screens using rose/blush color palette",
+      "acceptanceCriteria": [
+        "ChatPage shows skeleton message bubbles in the loading state",
+        "GalleryPage shows a 3-column skeleton grid while media is fetching",
+        "CallsPage shows skeleton cards while call history is loading",
+        "Auth/profile resolution shows a centered spinner on blush-white background",
+        "Skeletons use rose/blush shimmer animation consistent with the design theme"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/SkeletonMessageBubble.tsx",
+          "operation": "create",
+          "description": "Create a SkeletonMessageBubble component that renders a rounded rectangle matching the message bubble shape with a rose/blush shimmer animation. Use Tailwind's animate-pulse or a custom shimmer keyframe. The component should accept a 'side' prop to alternate left/right alignment and match ChatPage message styling."
+        },
+        {
+          "path": "frontend/src/components/SkeletonGridCell.tsx",
+          "operation": "create",
+          "description": "Create a SkeletonGridCell component that renders a square placeholder with a rose/blush shimmer animation for gallery items. Use aspect-ratio-square and the same shimmer animation as SkeletonMessageBubble."
+        },
+        {
+          "path": "frontend/src/components/SkeletonCallCard.tsx",
+          "operation": "create",
+          "description": "Create a SkeletonCallCard component that renders a card-shaped placeholder with a rose/blush shimmer animation matching the call history card layout in CallsPage."
+        },
+        {
+          "path": "frontend/src/components/LoadingSpinner.tsx",
+          "operation": "create",
+          "description": "Create a LoadingSpinner component that renders a centered spinner icon (lucide-react Loader2 or a custom SVG) with a spin animation in the rose/blush accent color. The component should be usable on any background and accept optional size and color props."
+        },
+        {
+          "path": "frontend/src/pages/ChatPage.tsx",
+          "operation": "modify",
+          "description": "Import SkeletonMessageBubble. In the messages query loading state (before messages are fetched), render an array of 3–5 SkeletonMessageBubble components with alternating sides. Replace the skeleton with actual messages once the query succeeds."
+        },
+        {
+          "path": "frontend/src/pages/GalleryPage.tsx",
+          "operation": "modify",
+          "description": "Import SkeletonGridCell. In the media query loading state, render a 3-column grid of 6–9 SkeletonGridCell components. Replace the skeleton grid with actual media items once the query succeeds."
+        },
+        {
+          "path": "frontend/src/pages/CallsPage.tsx",
+          "operation": "modify",
+          "description": "Import SkeletonCallCard. In the call history query loading state, render 3–4 SkeletonCallCard components. Replace the skeleton with actual call history once the query succeeds."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Import LoadingSpinner. While the auth state is resolving (during the SplashScreen phase or when waiting for profile), render a LoadingSpinner centered on the blush-white background below or within the SplashScreen component."
+        }
+      ]
+    },
+    {
+      "id": "REQ-33",
+      "summary": "Audit and fix all screen layouts to be fully responsive from 320px to 430px+ with safe area insets",
+      "acceptanceCriteria": [
+        "All screens render without horizontal scroll at 320px viewport width",
+        "Chat bubbles truncate or wrap gracefully on narrow screens",
+        "Gallery grid maintains square cells at all screen widths",
+        "Bottom tab bar accounts for env(safe-area-inset-bottom) and is never obscured",
+        "Call screens (active, outgoing, incoming) center content on all tested sizes"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ChatPage.tsx",
+          "operation": "modify",
+          "description": "Add responsive Tailwind classes to message bubbles: use max-w-[85%] or max-w-xs for narrow screens and max-w-md for wider screens. Ensure text wraps with break-words. Add horizontal padding (px-4) to the message list container to prevent edge clipping."
+        },
+        {
+          "path": "frontend/src/pages/GalleryPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the gallery grid uses grid-cols-3 on all screen sizes and that each cell maintains aspect-ratio-square. Add gap-2 or gap-1 for narrow screens. Test that the grid does not overflow the viewport width at 320px."
+        },
+        {
+          "path": "frontend/src/components/BottomTabNavigator.tsx",
+          "operation": "modify",
+          "description": "Add env(safe-area-inset-bottom) padding to the bottom tab bar using a Tailwind custom class or inline style (pb-[env(safe-area-inset-bottom)]). Ensure the tab bar has a fixed bottom position and does not overlap with content. Test on devices with notches/home indicators."
+        },
+        {
+          "path": "frontend/src/pages/ActiveCallPage.tsx",
+          "operation": "modify",
+          "description": "Add responsive centering and spacing utilities. Use flexbox with items-center and justify-center on the main container. Add padding (p-4 sm:p-6) and ensure buttons and text scale appropriately on narrow screens."
+        },
+        {
+          "path": "frontend/src/pages/ActiveVideoCallPage.tsx",
+          "operation": "modify",
+          "description": "Add responsive centering and ensure video elements use max-width and max-height constraints. Use flexbox centering on the main container and add padding (p-4 sm:p-6). Ensure PiP controls are accessible on narrow screens."
+        },
+        {
+          "path": "frontend/src/pages/OutgoingCallPage.tsx",
+          "operation": "modify",
+          "description": "Add responsive centering utilities (flex items-center justify-center) and ensure text and buttons scale appropriately with Tailwind responsive utilities (text-sm sm:text-base)."
+        },
+        {
+          "path": "frontend/src/pages/VideoOutgoingCallPage.tsx",
+          "operation": "modify",
+          "description": "Add responsive centering utilities (flex items-center justify-center) and ensure text and buttons scale appropriately with Tailwind responsive utilities (text-sm sm:text-base)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-34",
+      "summary": "Add empty state illustrations/messages for ChatPage, GalleryPage, and CallsPage with rose-toned assets",
+      "acceptanceCriteria": [
+        "ChatPage shows the empty state when message list is empty",
+        "GalleryPage shows the empty state when media list is empty",
+        "CallsPage empty state includes a small decorative illustration",
+        "All empty states use rose/blush colors consistent with the design theme",
+        "Empty states do not appear during loading — only after data has resolved to empty"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/EmptyStateChat.tsx",
+          "operation": "create",
+          "description": "Create an EmptyStateChat component that renders the generated empty-chat illustration (frontend/public/assets/generated/empty-chat.dim_400x300.png) centered with the text 'Say hello to your person 💕' in a romantic serif font below it. Use rose/blush text colors consistent with the design palette."
+        },
+        {
+          "path": "frontend/src/components/EmptyStateGallery.tsx",
+          "operation": "create",
+          "description": "Create an EmptyStateGallery component that renders the generated empty-gallery illustration (frontend/public/assets/generated/empty-gallery.dim_400x300.png) centered with the text 'Your shared memories will appear here 🌸' in a romantic serif font below it. Use rose/blush text colors consistent with the design palette."
+        },
+        {
+          "path": "frontend/src/components/EmptyStateCalls.tsx",
+          "operation": "create",
+          "description": "Create an EmptyStateCalls component that renders the generated empty-calls illustration (frontend/public/assets/generated/empty-calls.dim_400x300.png) centered with the existing text 'No calls yet 💕' in a romantic serif font below it. Use rose/blush text colors consistent with the design palette."
+        },
+        {
+          "path": "frontend/src/pages/ChatPage.tsx",
+          "operation": "modify",
+          "description": "Import EmptyStateChat. After the messages query succeeds, check if the messages array is empty. If empty, render EmptyStateChat centered in the chat container. Ensure the empty state is not shown during the loading state (only after data resolves)."
+        },
+        {
+          "path": "frontend/src/pages/GalleryPage.tsx",
+          "operation": "modify",
+          "description": "Import EmptyStateGallery. After the media query succeeds, check if the media array is empty. If empty, render EmptyStateGallery centered in the gallery container. Ensure the empty state is not shown during the loading state (only after data resolves)."
+        },
+        {
+          "path": "frontend/src/pages/CallsPage.tsx",
+          "operation": "modify",
+          "description": "Import EmptyStateCalls. Replace the existing 'No calls yet 💕' text with the EmptyStateCalls component when the call history array is empty (after the query succeeds). Ensure the empty state is not shown during the loading state."
+        }
+      ]
+    },
+    {
+      "id": "REQ-35",
+      "summary": "Implement lazy loading for gallery images using Intersection Observer or native loading='lazy'",
+      "acceptanceCriteria": [
+        "Images not in the viewport are not loaded on initial render",
+        "Images load as they scroll into the viewport",
+        "A placeholder (blush-tinted background or shimmer) is shown before image loads",
+        "No visual layout shift when images load in"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/GalleryPage.tsx",
+          "operation": "modify",
+          "description": "Add the loading='lazy' attribute to all img elements in the gallery grid. Add a placeholder background color (rose/blush tint) to each grid cell using Tailwind bg-rose-50 or bg-blush-100. Ensure each cell has a fixed aspect-ratio-square to prevent layout shift when images load. Optionally, use a SkeletonGridCell-like shimmer as the placeholder before the image loads."
+        }
+      ]
+    },
+    {
+      "id": "REQ-36",
+      "summary": "Add client-side image compression in CameraPage before uploading to backend",
+      "acceptanceCriteria": [
+        "Captured photos are resized to a max dimension of 1280px before upload",
+        "Re-encoded as JPEG at 0.82 quality using HTMLCanvasElement",
+        "The compressed [Nat8] array is passed to uploadMedia instead of the raw blob",
+        "Preview screen shows original vs. compressed file size",
+        "Compression happens before the upload loading indicator appears"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/compressImage.ts",
+          "operation": "create",
+          "description": "Create a compressImage utility function that accepts a File or Blob and returns a Promise<Uint8Array>. Inside, create an HTMLImageElement to load the image, calculate the scaled dimensions (max 1280px), draw the image onto an HTMLCanvasElement at the new size, and use canvas.toBlob with 'image/jpeg' and quality 0.82 to produce the compressed blob. Convert the blob to Uint8Array using FileReader or blob.arrayBuffer(). Return the compressed byte array."
+        },
+        {
+          "path": "frontend/src/pages/CameraPage.tsx",
+          "operation": "modify",
+          "description": "Import compressImage. After the user captures a photo and before calling the uploadMedia mutation, call compressImage on the captured File. Show the original and compressed file sizes in the preview UI (e.g., 'Original: 2.5 MB → Compressed: 0.8 MB'). Pass the compressed Uint8Array to ExternalBlob.fromBytes before calling uploadMedia. Ensure the compression step occurs before the upload loading indicator is shown."
+        }
+      ]
+    },
+    {
+      "id": "REQ-37",
+      "summary": "Add pagination to ChatPage: load last 20 messages on mount, fetch previous 20 on scroll to top",
+      "acceptanceCriteria": [
+        "getMessages in Motoko accepts offset and limit parameters",
+        "ChatPage fetches only the last 20 messages on initial load",
+        "Scrolling to the top triggers a fetch of the previous 20 messages",
+        "Previously loaded messages are preserved and older messages are prepended",
+        "Scroll position is maintained after prepending older messages",
+        "A loading indicator is shown at the top while older messages are fetching",
+        "No more-messages indicator is shown when all messages are loaded"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update the useGetMessages hook to accept optional offset and limit parameters (default limit 20). Pass these parameters to actor.getMessages(offset, limit). Modify the queryKey to include offset and limit so React Query caches separate pages."
+        },
+        {
+          "path": "frontend/src/pages/ChatPage.tsx",
+          "operation": "modify",
+          "description": "Implement pagination in ChatPage. On mount, fetch the last 20 messages using useGetMessages with offset=0 and limit=20. Store the loaded messages in local state. Add a scroll event listener to the message list container that triggers when scrollTop reaches 0 (scrolled to top). When triggered, fetch the next page (offset += 20) and prepend the returned messages to the local state. Maintain scroll position by calculating scrollHeight before and after prepending and adjusting scrollTop. Show a loading indicator (e.g., a spinner or 'Loading earlier messages...') at the top while fetching. Hide the indicator and show 'No more messages' if the fetch returns fewer than 20 messages."
+        }
+      ]
+    },
+    {
+      "id": "REQ-38",
+      "summary": "Add pagination to GalleryPage: load 12 items on mount, show 'Load more' button to fetch next 12",
+      "acceptanceCriteria": [
+        "getGalleryMedia in Motoko accepts offset and limit parameters",
+        "GalleryPage loads 12 items on initial mount",
+        "A 'Load more' button appends the next 12 items to the grid",
+        "The button is hidden when there are no more items to load",
+        "Existing items are not re-fetched or re-ordered when loading more"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update the useGetGalleryMedia hook to accept optional offset and limit parameters (default limit 12). Pass these parameters to actor.getGalleryMedia(offset, limit). Modify the queryKey to include offset and limit."
+        },
+        {
+          "path": "frontend/src/pages/GalleryPage.tsx",
+          "operation": "modify",
+          "description": "Implement pagination in GalleryPage. On mount, fetch the first 12 items using useGetGalleryMedia with offset=0 and limit=12. Store the loaded items in local state. Render a 'Load more' button at the bottom of the grid. When clicked, fetch the next page (offset += 12) and append the returned items to the local state. Hide the button if the last fetch returned fewer than 12 items (indicating no more items). Ensure existing items are not re-fetched or re-ordered."
+        }
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "summary": "Add comprehensive error handling and user-facing error messages across the app with rose/blush styled toasts",
+      "acceptanceCriteria": [
+        "Network/actor errors show a dismissible rose-styled toast or inline error message",
+        "Upload failures re-enable the Save button and show a retry message",
+        "Call connection failures show a clear message and return to Calls tab automatically",
+        "A dropped call (RTCPeerConnection failed/disconnected state) shows 'Call ended unexpectedly' before navigating back",
+        "No unhandled exceptions reach the React error boundary for any of these cases"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ErrorToast.tsx",
+          "operation": "create",
+          "description": "Create an ErrorToast component that displays a dismissible toast message at the top of the screen. Use rose/blush styling (bg-rose-100 border-rose-400 text-rose-800) and include a close button (lucide-react X icon). The component should accept message text and an optional onClose callback. Use Tailwind animations for slide-in/slide-out transitions."
+        },
+        {
+          "path": "frontend/src/hooks/useErrorToast.ts",
+          "operation": "create",
+          "description": "Create a useErrorToast hook that manages a global error toast state (message, visibility). Export a showError function that sets the message and shows the toast, and a hideError function that dismisses the toast. Use React context or a simple state hook to share the toast across components."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Import ErrorToast and useErrorToast. Render ErrorToast at the root level of App.tsx (above all other content) and wire it to the global error toast state from useErrorToast. Ensure the toast is accessible from any page."
+        },
+        {
+          "path": "frontend/src/pages/CameraPage.tsx",
+          "operation": "modify",
+          "description": "Import useErrorToast. Wrap the uploadMedia mutation in a try-catch block. On error, call showError('Upload failed — please try again') and re-enable the Save button. Ensure the error does not crash the page."
+        },
+        {
+          "path": "frontend/src/pages/OutgoingCallPage.tsx",
+          "operation": "modify",
+          "description": "Import useErrorToast. Wrap the createCallSession and RTCPeerConnection setup in try-catch blocks. On error, call showError('Call failed to connect') and navigate back to the Calls tab after a short delay. Handle peer connection failures (iceconnectionstatechange 'failed' or 'disconnected') by showing the error and navigating back."
+        },
+        {
+          "path": "frontend/src/pages/VideoOutgoingCallPage.tsx",
+          "operation": "modify",
+          "description": "Import useErrorToast. Wrap the createCallSession and RTCPeerConnection setup in try-catch blocks. On error, call showError('Call failed to connect') and navigate back to the Calls tab after a short delay. Handle peer connection failures by showing the error and navigating back."
+        },
+        {
+          "path": "frontend/src/pages/ActiveCallPage.tsx",
+          "operation": "modify",
+          "description": "Import useErrorToast. Add an iceconnectionstatechange listener to RTCPeerConnection. If the connection state becomes 'failed' or 'disconnected', call showError('Call ended unexpectedly') and navigate back to the Calls tab after a short delay."
+        },
+        {
+          "path": "frontend/src/pages/ActiveVideoCallPage.tsx",
+          "operation": "modify",
+          "description": "Import useErrorToast. Add an iceconnectionstatechange listener to RTCPeerConnection. If the connection state becomes 'failed' or 'disconnected', call showError('Call ended unexpectedly') and navigate back to the Calls tab after a short delay."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "For all mutation hooks (sendMessage, uploadMedia, createCallSession, etc.), add onError callbacks that call showError with a user-friendly message (e.g., 'Network error — please try again'). Ensure actor errors are caught and surfaced as toast messages."
+        }
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "summary": "Generate a detailed testing checklist covering auth, chat, camera, gallery, voice call, video call, and two-browser testing",
+      "acceptanceCriteria": [
+        "Checklist covers all 7 sections listed above",
+        "Each checklist item is actionable and testable",
+        "Two-browser testing section gives explicit step-by-step instructions",
+        "Document is accessible from the project (either as a public asset or rendered page)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/TESTING_CHECKLIST.md",
+          "operation": "create",
+          "description": "Create a detailed TESTING_CHECKLIST.md document covering: (1) Auth flow: register, pair, login, logout, session persistence across browser refresh; (2) Chat: send message, receive message via polling, read receipts toggling, pagination (scroll to top); (3) Camera: photo capture, front/back toggle, flash toggle, compression, upload, retake; (4) Gallery: view grid, full-screen tap, pinch-to-zoom, long-press delete, confirmation, pagination (load more button); (5) Voice Call: initiate, receive overlay, accept, decline, mute, speaker toggle, end call, partner hang-up, dropped connection; (6) Video Call: initiate, permission denied flow, receive overlay, accept, decline, camera toggle, front/back switch, PiP drag, end call, partner hang-up; (7) Two-browser testing steps: open app in two browser tabs/windows with two different Internet Identity accounts, verify pairing and real-time interaction (chat, calls, gallery). Use markdown formatting with checkboxes for each item."
+        }
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "summary": "Generate a comprehensive README.md at project root covering overview, architecture, setup, deployment, and features",
+      "acceptanceCriteria": [
+        "README.md exists at the project root",
+        "Local setup instructions work end-to-end for a fresh clone",
+        "Deploy-to-mainnet section uses correct dfx CLI commands",
+        "Environment variables section is in .env format",
+        "Architecture and feature sections are accurate to the ICP/Motoko/React stack"
+      ],
+      "file_operations": [
+        {
+          "path": "README.md",
+          "operation": "create",
+          "description": "Create a README.md at the project root covering: (1) Full project overview describing OnlyUs as a private 2-user couples web app on the Internet Computer with end-to-end encrypted communication; (2) Architecture overview: React/TypeScript frontend + Motoko backend on ICP, WebRTC for real-time calls, Internet Identity for auth; (3) Step-by-step local setup: prerequisites (DFX SDK, Node.js 18+, pnpm), clone repo, pnpm install, dfx start --background, dfx deploy; (4) How to run locally with hot reload (pnpm dev); (5) How to deploy to ICP mainnet (dfx deploy --network ic); (6) Required environment variables in .env format (canister IDs for backend, frontend, internet-identity); (7) Feature summary: Internet Identity Auth, Real-time Chat with read receipts and pagination, Camera Capture with compression and upload, Shared Gallery with lazy loading and pagination, Voice Calls with WebRTC signaling, Video Calls with PiP and camera switching; (8) Security notes: couple-only principal enforcement in Motoko, WebRTC peer-to-peer connections, camera media stays in-memory or on-chain storage (no native device photo gallery writes). Use markdown formatting with code blocks for commands and .env examples."
+        }
+      ]
+    }
+  ]
+}
